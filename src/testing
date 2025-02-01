@@ -1,0 +1,163 @@
+<?php
+include 'setup.php';
+
+$sqlAge = "SELECT 
+            DISTINCT age_group,
+            SUM(CASE WHEN result = 'Low Risk' THEN 1 ELSE 0 END) AS low_risk,
+            SUM(CASE WHEN result = 'Moderate Risk' THEN 1 ELSE 0 END) AS moderate_risk,
+            SUM(CASE WHEN result = 'High Risk' THEN 1 ELSE 0 END) AS high_risk
+            FROM (
+                SELECT 
+                    CASE
+                        WHEN age BETWEEN 5 AND 6 THEN '5-6'
+                        WHEN age BETWEEN 7 AND 12 THEN '7-12'
+                        WHEN age BETWEEN 13 AND 16 THEN '13-16'
+                        WHEN age BETWEEN 17 AND 18 THEN '17-18'
+                        WHEN age BETWEEN 19 AND 23 THEN '19-23'
+                        ELSE 'Other'
+                    END AS age_group,
+                    result
+                FROM food_monitoring
+                WHERE age BETWEEN 5 AND 23
+            ) AS subquery
+            GROUP BY age_group
+            ORDER BY FIELD(age_group, '5-6', '7-12', '13-16', '17-18', '19-23', 'Other')";
+
+// Execute SQL query
+$result = mysqli_query($conn, $sqlAge);
+
+$ages = array(); // Array to hold unique ages names
+$data = array(
+    'Low Risk' => array(),
+    'Moderate Risk' => array(),
+    'High Risk' => array()
+);
+
+while ($row = mysqli_fetch_assoc($result)) {
+    $age = $row['age_group'];
+    
+    // If age is not already in the array, add it
+    if (!in_array($age, $ages)) {
+        $ages[] = $age;
+    }
+    
+    // Populate data for each result type
+    $data['Low Risk'][] = $row['low_risk'];
+    $data['Moderate Risk'][] = $row['moderate_risk'];
+    $data['High Risk'][] = $row['high_risk'];
+}
+
+// Fetch distinct years and months
+$sqlDistinctDates = "SELECT DISTINCT YEAR(date) AS year, MONTH(date) AS month FROM food_monitoring ORDER BY year DESC, month DESC";
+$resultDistinctDates = mysqli_query($conn, $sqlDistinctDates);
+
+$years = array();
+$months = array();
+
+while ($row = mysqli_fetch_assoc($resultDistinctDates)) {
+    $years[] = $row['year'];
+    $months[] = $row['month'];
+}
+$years = array_unique($years);
+$months = array_unique($months);
+?>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="card shadow mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="text-primary fw-bold m-0">By Age</h6>
+    </div>
+    <div class="card-body">
+        <div class="select" style="display: flex;">
+            <select class="form-control" id="ageSelectYear" style="width: 25%; margin-right: 5px;">
+                <?php foreach ($years as $year) { ?>
+                    <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
+                <?php } ?>
+            </select>
+
+            <select class="form-control" id="ageMonthSelect" style="width: 25%; margin-left: 5px;">
+                <?php foreach ($months as $month) { ?>
+                    <option value="<?php echo $month; ?>"><?php echo date("F", mktime(0, 0, 0, $month, 1)); ?></option>
+                <?php } ?>
+            </select>
+        </div>
+        <canvas id="ageBarChart" width="400" height="200"></canvas>
+    </div>
+</div>
+
+<script>
+    var ageSelectYear = document.getElementById('ageSelectYear');
+    var ageMonthSelect = document.getElementById('ageMonthSelect');
+    var ageBarChrt; // Define ageBarChrt variable outside the scope of any function
+
+    ageSelectYear.addEventListener('change', ageChartUpdate);
+    ageMonthSelect.addEventListener('change', ageChartUpdate);
+
+    function ageChartUpdate() {
+        var ageYearSelected = ageSelectYear.value;
+        var ageSelectedMonth = ageMonthSelect.value;
+
+        fetch('fetch_age_food_data.php?year=' + ageYearSelected + '&month=' + ageSelectedMonth)
+            .then(response => response.json())
+            .then(data => {
+                // Check if myChart is defined before updating it
+                if (ageBarChrt) {
+                    ageBarChrt.data.labels = data.ages;
+                    ageBarChrt.data.datasets[0].data = data.low_risk;
+                    ageBarChrt.data.datasets[1].data = data.moderate_risk;
+                    ageBarChrt.data.datasets[2].data = data.high_risk;
+                    ageBarChrt.update();
+                }
+            });
+    }
+
+    // Get the latest year and month values
+    var latestYear = <?php echo $years[0]; ?>;
+    var latestMonth = <?php echo $months[0]; ?>;
+
+    // Set the selected values for the dropdown menus
+    ageSelectYear.value = latestYear;
+    ageMonthSelect.value = latestMonth;
+
+    // Trigger the chart update function with the latest values
+    ageChartUpdate();
+
+    // Initial chart rendering
+    var chart = document.getElementById('ageBarChart').getContext('2d');
+    ageBarChrt = new Chart(chart, {
+        type: 'bar',
+        data: {
+            labels: <?php echo json_encode($ages); ?>,
+            datasets: [
+                {
+                    label: 'High Risk',
+                    data: <?php echo json_encode($data['High Risk']); ?>,
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)', // RED
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Moderate Risk',
+                    data: <?php echo json_encode($data['Moderate Risk']); ?>,
+                    backgroundColor: 'rgba(255, 159, 64, 0.5)', // ORANGE
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Low Risk',
+                    data: <?php echo json_encode($data['Low Risk']); ?>,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)', // BLUE
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            scales: {
+                x: {},
+                y: {}
+            }
+        }
+    });
+</script>

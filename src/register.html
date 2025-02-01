@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Register - Brand</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Aclonica&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Adamina&amp;display=swap">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="assets/css/Bootstrap-4-Calendar-No-Custom-Code.css">
+    <link rel="stylesheet" href="assets/css/Icon-Button.css">
+</head>
+
+<body class="bg-gradient-primary" style="background: url(&quot;assets/img/techno.jpg&quot;);">
+    <div class="container">
+        <div class="card shadow-lg o-hidden border-0 my-5">
+            <div class="card-body p-0">
+                <div class="row">
+                    <div class="col-lg-5 d-none d-lg-flex">
+                        <div class="flex-grow-1 bg-register-image" style="background: url(&quot;assets/img/tooth.png&quot;) center / contain no-repeat;"></div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="p-5">
+                            <div class="text-center">
+                                <h4 class="text-dark mb-4" style="font-weight: bold;font-family: 'Abril Fatface', serif;text-shadow: 0px 0px 5px var(--bs-blue);">Decision Support System for Food Monitoring and Dental Health Profiling</h4>
+                                <h5 class="text-dark mb-4">Create an Account!</h5>
+                            </div>
+                            <form class="user" method="post" action="register.php">
+                                <div class="row mb-3">
+                                    <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user" type="text" placeholder="Student ID" name="student_id"></div>
+                                    <div class="col-sm-6"><input class="form-control form-control-user" type="text" placeholder="First Name" name="fname"></div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user" type="text" placeholder="Last Name" name="lname"></div>
+                                    <div class="col-sm-6"><input class="form-control" type="text" style="padding: 16px; height: 53.1875px; border-radius: 160px;" name="birthdate" id="birthdateInput"/>
+
+<script>
+var input = document.getElementById("birthdateInput");
+var originalType = "date";
+var placeholderText = "Birthdate";
+
+input.value = placeholderText;
+
+input.addEventListener("focus", function() {
+    if (input.value === placeholderText) {
+        input.value = "";
+        input.type = originalType;
+    }
+});
+
+input.addEventListener("blur", function() {
+    if (input.value === "") {
+        input.value = placeholderText;
+        input.type = "text";
+    }
+});
+</script>
+</div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user" type="text" placeholder="Barangay" name="brgy"></div>
+                                    <div class="col-sm-6"><input class="form-control form-control-user" type="text" placeholder="Municipality" name="municipality"></div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-6 col-xl-6 mb-3 mb-sm-0"><input class="form-control form-control-user" type="text" placeholder="Province" name="province"></div>
+                                    <div class="col-sm-6 col-xl-6"><input class="form-control form-control-user" type="email" aria-describedby="emailHelp" placeholder="Email Address" name="email"></div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control" type="number" style="padding: 16px;border-radius: 160px;" name="phone" placeholder="Phone Number"></div>
+                                    <div class="col-sm-6"><input class="form-control form-control-user" type="text" placeholder="Allergy" name="allergy"></div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-6 mb-3 mb-sm-0"><input class="form-control" type="text" style="padding: 16px;border-radius: 160px;" name="course" placeholder="Course"></div>
+                                    <div class="col-sm-6 col-md-6 col-lg-6 col-xl-6" style="margin-bottom: 16px;"><select class="form-select" style="padding: 16px;border-radius: 160px;" name="gender">
+                                            <optgroup label="Gender">
+                                                <option value="Male" selected="">Male</option>
+                                                <option value="Female">Female</option>
+                                            </optgroup>
+                                        </select></div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12" style="margin-bottom: 16px;"><select class="form-select" style="padding: 16px;border-radius: 160px;" name="department">
+                                            <optgroup label="Department">
+                                                <option value="CICT" selected="">CICT</option>
+                                                <option value="ILS">ILS</option>
+                                                <option value="COD">COD</option>
+                                                <option value="COE">COE</option>
+                                                <option value="CON">CON</option>
+                                            </optgroup>
+                                        </select></div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user" type="password" placeholder="Password" name="password"></div>
+                                    <div class="col-sm-6"><input class="form-control form-control-user" type="password" placeholder="Repeat Password" name="repass"></div>
+                                </div><button class="btn btn-primary d-block btn-user w-100" type="submit">Register Account</button>
+                            </form>
+                            <div class="text-center"><a class="small" href="forgot-password.html">Forgot Password?</a></div>
+                            <div class="text-center"><a class="small" href="login.php">Already have an account? Login!</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/bs-init.js"></script>
+    <script src="assets/js/theme.js"></script>
+</body>
+
+</html>

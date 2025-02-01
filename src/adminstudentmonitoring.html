@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Table - Brand</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface&amp;display=swap">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="assets/css/Bootstrap-4-Calendar-No-Custom-Code.css">
+    <link rel="stylesheet" href="assets/css/Icon-Button.css">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0" style="background: url(&quot;assets/img/blu3.jpg&quot;);">
+            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+                    <div class="sidebar-brand-icon rotate-n-15"><img src="assets/img/364960463_1215282112492812_4229741986524435405_n.png" style="width: 100%;height: 50px;"></div>
+                    <div class="sidebar-brand-text mx-3"><span>iDentify<br></span></div>
+                </a>
+                <hr class="sidebar-divider my-0">
+                <ul class="navbar-nav text-light" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link" href="admindash.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="adminstudents.php"><i class="fas fa-user-friends"></i><span>Students</span></a></li>
+                    <li class="nav-item dropdown"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><i class="fas fa-file-medical-alt"></i>Profiling</a>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="adminassessment.php">Oral Assessment</a><a class="dropdown-item" href="adminmonitoring.php">Food Monitoring</a></div>
+                    </li>
+                </ul>
+                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content">
+                <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
+                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                        <ul class="navbar-nav flex-nowrap ms-auto">
+                            <li class="nav-item dropdown d-sm-none no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><i class="fas fa-search"></i></a>
+                                <div class="dropdown-menu dropdown-menu-end p-3 animated--grow-in" aria-labelledby="searchDropdown">
+                                    <form class="me-auto navbar-search w-100">
+                                        <div class="input-group"><input class="bg-light form-control border-0 small" type="text" placeholder="Search for ...">
+                                            <div class="input-group-append"><button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown no-arrow mx-1"><div class="nav-item dropdown no-arrow">
+    <a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#">
+        <div>
+            <?php
+            include 'setup.php';
+
+            // Initialize a variable to store pending appointment notifications
+            $pendingAppointmentsHtml = '';
+
+            // Select pending appointments with details
+            $sql = "SELECT first_name, last_name, description, date FROM appointment WHERE status = 'Pending'";
+            $result = $conn->query($sql);
+
+            // Count the number of unseen notifications
+            $unseenCount = 0;
+
+            if ($result && $result->num_rows > 0) {
+                // Loop through pending appointments
+                while ($row = $result->fetch_assoc()) {
+                    $firstName = $row['first_name'];
+                    $lastName = $row['last_name'];
+                    $description = $row['description'];
+                    $date = $row['date'];
+
+                    // Concatenate notification message to the variable
+                    $pendingAppointmentsHtml .= '
+                    <a class="dropdown-item d-flex align-items-center" href="admindash.php?modal=pendingModal" style="text-decoration: none; color: inherit;">
+                        <div class="me-3">
+                            <div class="bg-primary icon-circle"><i class="fas fa-calendar-alt text-white"></i></div>
+                        </div>
+                        <div>
+                            <span class="small text-gray-500">' . $firstName . ' ' . $lastName . '</span>
+                            <p>' . $description . ' ' . $date . ' </p>
+                        </div>
+                    </a>
+                    ';
+                    
+                    $unseenCount++;
+                }
+
+                $result->free(); // Free the result set
+            }
+
+            // Output notification icon with badge
+            echo '<i class="fas fa-bell fa-fw"></i>';
+            echo '<span class="badge bg-danger badge-counter">' . $unseenCount . '</span>';
+            ?>
+        </div>
+    </a>
+    <div class="dropdown-menu dropdown-menu-end dropdown-list animated--grow-in" style="max-height: 200px; overflow-y: auto;">
+        <h6 class="dropdown-header">Notifications</h6>
+        <!-- Output the concatenated notification messages -->
+        <?php echo $pendingAppointmentsHtml; ?>
+    </div>
+</div>
+
+</li>
+                            <li class="nav-item dropdown no-arrow">
+                                <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><?php
+include 'setup.php';
+
+// Assuming you have a user_id stored in the session (replace this with your actual session variable)
+$admin_id = $_SESSION['admin_id'];
+
+
+// Fetch the first_name and last_name from the user table
+$query = "SELECT first_name, last_name FROM admin WHERE id = '$admin_id'";
+$result = mysqli_query($conn, $query);
+
+if (mysqli_num_rows($result) == 1) {
+    $row = mysqli_fetch_assoc($result);
+    $first_name = $row['first_name'];
+    $last_name = $row['last_name'];
+    
+    // Output the data within the HTML span element
+    echo '<span class="d-none d-lg-inline me-2 text-gray-600 small">' . $first_name . ' ' . $last_name . '</span>';
+} else {
+    echo '<span class="d-none d-lg-inline me-2 text-gray-600 small">User not found</span>';
+}
+?>
+</a>
+                                    <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in"><a class="dropdown-item" href="admineditprofile.php"><i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Profile</a>
+                                        <div class="dropdown-divider"></div><a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Logout</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="container-fluid">
+                    <h3 class="text-dark mb-4">Student Food Monitoring Results</h3><?php
+// Start the session if not already started
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'] ?? null;
+
+// Fetch distinct months and years
+$date_query = "SELECT DISTINCT DATE_FORMAT(date, '%Y-%m') AS month_year FROM food_monitoring WHERE student_id = '$student_id'";
+$date_result = mysqli_query($conn, $date_query);
+
+if ($date_result === false) {
+    die("Error executing date query: " . mysqli_error($conn));
+}
+
+$monthsYears = [];
+while ($row = mysqli_fetch_assoc($date_result)) {
+    $monthsYears[] = $row['month_year'];
+}
+
+// Default month and year to the first one in the list
+$selectedMonthYear = $monthsYears[0] ?? null;
+
+// Check if a month and year are selected from the form
+if (isset($_POST['selectedMonth']) && isset($_POST['selectedYear'])) {
+    $selectedMonth = $_POST['selectedMonth'];
+    $selectedYear = $_POST['selectedYear'];
+    $selectedMonthYear = "$selectedYear-$selectedMonth";
+}
+
+// Extract selected year and month
+list($selectedYear, $selectedMonth) = explode('-', $selectedMonthYear);
+
+// Query to count occurrences per month for each risk category based on the selected month and year
+$sql = "SELECT 
+            DATE_FORMAT(date, '%M') AS month,
+            COUNT(CASE WHEN result = 'High Risk' THEN 1 END) AS high_risk_count,
+            COUNT(CASE WHEN result = 'Low Risk' THEN 1 END) AS low_risk_count,
+            COUNT(CASE WHEN result = 'Moderate Risk' THEN 1 END) AS moderate_risk_count
+        FROM food_monitoring
+        WHERE DATE_FORMAT(date, '%Y') = '$selectedYear' AND DATE_FORMAT(date, '%m') = '$selectedMonth'
+        GROUP BY month
+        ORDER BY month";
+
+$result_select = mysqli_query($conn, $sql);
+
+if ($result_select === false) {
+    die("Error executing query: " . mysqli_error($conn));
+}
+
+$months = [];
+$highRiskCounts = [];
+$lowRiskCounts = [];
+$moderateRiskCounts = [];
+
+while ($row = mysqli_fetch_assoc($result_select)) {
+    $months[] = $row['month'];
+    $highRiskCounts[] = $row['high_risk_count'];
+    $lowRiskCounts[] = $row['low_risk_count'];
+    $moderateRiskCounts[] = $row['moderate_risk_count'];
+}
+?>
+
+<div class="card shadow mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="text-primary fw-bold m-0">Food Monitoring Risk Category Counts Per Month</h6>
+        <div class="form-group">
+            <!-- Create separate month and year selection forms -->
+            <form method="post">
+                <label for="monthSelect">Select Month:</label>
+                <select name="selectedMonth" id="monthSelect" onchange="this.form.submit()">
+                    <?php
+                    $monthsList = [
+                        '01' => 'January',
+                        '02' => 'February',
+                        '03' => 'March',
+                        '04' => 'April',
+                        '05' => 'May',
+                        '06' => 'June',
+                        '07' => 'July',
+                        '08' => 'August',
+                        '09' => 'September',
+                        '10' => 'October',
+                        '11' => 'November',
+                        '12' => 'December',
+                    ];
+
+                    foreach ($monthsList as $monthNumber => $monthName) {
+                        echo "<option value=\"$monthNumber\"";
+                        if ($selectedMonth == $monthNumber) {
+                            echo " selected";
+                        }
+                        echo ">$monthName</option>";
+                    }
+                    ?>
+                </select>
+
+                <label for="yearSelect">Select Year:</label>
+                <select name="selectedYear" id="yearSelect" onchange="this.form.submit()">
+                    <?php
+                    foreach ($monthsYears as $year) {
+                        echo "<option value=\"$year\"";
+                        if ($selectedYear == $year) {
+                            echo " selected";
+                        }
+                        echo ">$year</option>";
+                    }
+                    ?>
+                </select>
+            </form>
+        </div>
+    </div>
+    <style>
+        /* Custom class for adjusting card body size */
+        .custom-card-body {
+            padding: 10px; /* Adjust padding as needed */
+            max-height: 400px; /* Adjust max-height as needed */
+            overflow-y: auto; /* Add scrollbar if content exceeds max-height */
+        }
+    </style>
+    
+    <div class="card-body custom-card-body">
+        <div class="table-responsive mt-4">
+            <!-- Tabular Chart -->
+            <table class="table table-bordered" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>High Risk</th>
+                        <th>Low Risk</th>
+                        <th>Moderate Risk</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    // Check if $months is set and not null before iterating
+                    if (isset($months) && !is_null($months)) {
+                        for ($i = 0; $i < count($months); $i++) {
+                            echo "<tr>";
+                            echo "<td>{$months[$i]}</td>";
+                            echo "<td>{$highRiskCounts[$i]}</td>";
+                            echo "<td>{$lowRiskCounts[$i]}</td>";
+                            echo "<td>{$moderateRiskCounts[$i]}</td>";
+                            echo "</tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='4'>No data available</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+// Fetch distinct months and years
+$date_query = "SELECT DISTINCT DATE_FORMAT(date, '%Y-%m') AS month_year FROM food_monitoring WHERE student_id = '$student_id'";
+$date_result = mysqli_query($conn, $date_query);
+
+if ($date_result === false) {
+    die("Error executing date query: " . mysqli_error($conn));
+}
+
+$monthsYears = [];
+while ($row = mysqli_fetch_assoc($date_result)) {
+    $monthsYears[] = $row['month_year'];
+}
+
+// Default month and year to the first one in the list
+$selectedMonthYear = $monthsYears[0] ?? null;
+$selectedYear = date('Y'); // Default to the current year
+
+// Check if a month and year are selected from the form
+if (isset($_POST['selectedMonthYear'])) {
+    $selectedMonthYear = $_POST['selectedMonthYear'];
+}
+
+if (isset($_POST['selectedYear'])) {
+    $selectedYear = $_POST['selectedYear'];
+}
+
+// Select nutrition values for the chosen month and year and calculate averages
+$nutrition_query = "SELECT 
+                        AVG(fruit_no_sugar) AS avg_fruit_no_sugar,
+                        AVG(fruit_with_sugar) AS avg_fruit_with_sugar,
+                        AVG(fruit_juice) AS avg_fruit_juice,
+                        AVG(vegjuice_no_sugar) AS avg_vegjuice_no_sugar,
+                        AVG(vegjuice_with_sugar) AS avg_vegjuice_with_sugar,
+                        AVG(fresh_veg) AS avg_fresh_veg,
+                        AVG(fresh_vegsugar) AS avg_fresh_vegsugar,
+                        AVG(rice_grain) AS avg_rice_grain,
+                        AVG(cracker_grain) AS avg_cracker_grain,
+                        AVG(pastry_grain) AS avg_pastry_grain,
+                        AVG(dairy_no_sugar) AS avg_dairy_no_sugar,
+                        AVG(dairy_cheese) AS avg_dairy_cheese,
+                        AVG(dairy_with_sugar) AS avg_dairy_with_sugar,
+                        AVG(protein_no_sugar) AS avg_protein_no_sugar,
+                        AVG(protein_with_sugar) AS avg_protein_with_sugar,
+                        AVG(oils_no_sugar) AS avg_oils_no_sugar,
+                        AVG(calorie_with_sugar) AS avg_calorie_with_sugar,
+                        AVG(added_sugar) AS avg_added_sugar,
+                        AVG(sugary_drinks) AS avg_sugary_drinks
+                    FROM food_monitoring
+                    WHERE student_id = '$student_id' AND DATE_FORMAT(date, '%Y-%m') = '$selectedMonthYear'";
+$nutrition_result = mysqli_query($conn, $nutrition_query);
+
+if ($nutrition_result === false) {
+    die("Error executing nutrition query: " . mysqli_error($conn));
+}
+
+$nutritionData = mysqli_fetch_assoc($nutrition_result);
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrition Averages Line Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="card shadow mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="text-primary fw-bold m-0">Nutrition Averages Line Chart</h6>
+        <form method="post">
+            <label for="monthSelect">Select Month:</label>
+            <select name="selectedMonthYear" id="monthSelect" onchange="this.form.submit()">
+                <?php
+                // Array of all 12 months
+                $allMonths = [
+                    '01' => 'January', '02' => 'February', '03' => 'March',
+                    '04' => 'April', '05' => 'May', '06' => 'June',
+                    '07' => 'July', '08' => 'August', '09' => 'September',
+                    '10' => 'October', '11' => 'November', '12' => 'December'
+                ];
+
+                foreach ($allMonths as $monthNumber => $monthName) {
+                    $monthYear = "$selectedYear-$monthNumber";
+                    echo "<option value=\"$monthYear\"";
+                    if ($selectedMonthYear === $monthYear) {
+                        echo " selected";
+                    }
+                    echo ">$monthName</option>";
+                }
+                ?>
+            </select>
+
+            <label for="yearSelect">Select Year:</label>
+            <select name="selectedYear" id="yearSelect" onchange="this.form.submit()">
+                <?php
+                // Extract years from the month_year format
+                $years = array_map(function ($my) {
+                    return substr($my, 0, 4);
+                }, $monthsYears);
+
+                $years = array_unique($years);
+
+                foreach ($years as $year) {
+                    echo "<option value=\"$year\"";
+                    if ($selectedYear === $year) {
+                        echo " selected";
+                    }
+                    echo ">$year</option>";
+                }
+
+                // Add options for 2023 and 2024
+                echo "<option value=\"2023\"";
+                if ($selectedYear === '2023') {
+                    echo " selected";
+                }
+                echo ">2023</option>";
+
+                echo "<option value=\"2024\"";
+                if ($selectedYear === '2024') {
+                    echo " selected";
+                }
+                echo ">2024</option>";
+                ?>
+            </select>
+        </form>
+    </div>
+    <div class="card-body">
+        <canvas id="nutritionLineChart" height="300"></canvas>
+    </div>
+</div>
+
+<script>
+    // Line Chart Configuration
+    var lineConfig = {
+        type: 'line',
+        data: {
+            labels: <?php echo json_encode(array_keys($nutritionData)); ?>,
+            datasets: [
+                {
+                    label: 'Nutrition Averages',
+                    data: <?php echo json_encode(array_values($nutritionData)); ?>,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    fill: false
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Nutrition Values'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Average'
+                    },
+                    beginAtZero: true
+                }
+            }
+        }
+    };
+
+    // Get the line chart canvas
+    var lineChartCanvas = document.getElementById('nutritionLineChart').getContext('2d');
+
+    // Create the line chart
+    var lineChart = new Chart(lineChartCanvas, lineConfig);
+</script>
+</body>
+</html>
+
+                </div>
+                <div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col"><?php
+include 'setup.php';
+
+// Fetch distinct months and years
+$date_query = "SELECT DISTINCT DATE_FORMAT(date, '%Y-%m') AS month_year FROM food_monitoring";
+$date_result = mysqli_query($conn, $date_query);
+
+if ($date_result === false) {
+    die("Error executing date query: " . mysqli_error($conn));
+}
+
+$monthsYears = [];
+while ($row = mysqli_fetch_assoc($date_result)) {
+    $monthsYears[] = $row['month_year'];
+}
+
+// Default month and year to the first one in the list
+$selectedMonthYear = $monthsYears[0] ?? null;
+
+// Check if a month and year are selected from the form
+if (isset($_POST['selectedMonthYear'])) {
+    $selectedMonthYear = $_POST['selectedMonthYear'];
+}
+
+// Query to count occurrences per month for each risk category based on the selected month and year
+$sql = "SELECT 
+            DATE_FORMAT(date, '%M') AS month,
+            COUNT(CASE WHEN result = 'High Risk' THEN 1 END) AS high_risk_count,
+            COUNT(CASE WHEN result = 'Low Risk' THEN 1 END) AS low_risk_count,
+            COUNT(CASE WHEN result = 'Moderate Risk' THEN 1 END) AS moderate_risk_count
+        FROM food_monitoring
+        WHERE DATE_FORMAT(date, '%Y-%m') = '$selectedMonthYear'
+        GROUP BY month
+        ORDER BY month";
+
+$result_select = mysqli_query($conn, $sql);
+
+if ($result_select === false) {
+    die("Error executing query: " . mysqli_error($conn));
+}
+
+$months = [];
+$highRiskCounts = [];
+$lowRiskCounts = [];
+$moderateRiskCounts = [];
+
+while ($row = mysqli_fetch_assoc($result_select)) {
+    $months[] = $row['month'];
+    $highRiskCounts[] = $row['high_risk_count'];
+    $lowRiskCounts[] = $row['low_risk_count'];
+    $moderateRiskCounts[] = $row['moderate_risk_count'];
+}
+?>
+
+<div class="card shadow mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="text-primary fw-bold m-0">Risk Category Counts Per Month</h6>
+        <div class="form-group">
+            <!-- Create the month and year selection form -->
+            <form method="post">
+                <label for="monthYearSelect">Select Month and Year:</label>
+                <select name="selectedMonthYear" id="monthYearSelect" onchange="this.form.submit()">
+                    <?php
+                    foreach ($monthsYears as $monthYear) {
+                        echo "<option value=\"$monthYear\"";
+                        if ($selectedMonthYear === $monthYear) {
+                            echo " selected";
+                        }
+                        echo ">$monthYear</option>";
+                    }
+                    ?>
+                </select>
+            </form>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive mt-4">
+            <!-- Bar Chart -->
+            <canvas id="riskCategoryChart" width="400" height="224"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('riskCategoryChart').getContext('2d');
+    var months = <?php echo json_encode($months); ?>;
+    var highRiskCounts = <?php echo json_encode($highRiskCounts); ?>;
+    var lowRiskCounts = <?php echo json_encode($lowRiskCounts); ?>;
+    var moderateRiskCounts = <?php echo json_encode($moderateRiskCounts); ?>;
+
+    var barChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: months,
+            datasets: [
+                {
+                    label: 'High Risk',
+                    data: highRiskCounts,
+                    backgroundColor: 'red',
+                    borderWidth: 1,
+                },
+                {
+                    label: 'Moderate Risk',
+                    data: moderateRiskCounts,
+                    backgroundColor: 'yellow',
+                    borderWidth: 1,
+                },
+                {
+                    label: 'Low Risk',
+                    data: lowRiskCounts,
+                    backgroundColor: 'green',
+                    borderWidth: 1,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Month'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Count'
+                    },
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        }
+    });
+</script>
+</div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col"><?php
+include 'setup.php';
+
+// Fetch distinct months and years
+$date_query = "SELECT DISTINCT DATE_FORMAT(date, '%Y-%m') AS month_year FROM food_monitoring";
+$date_result = mysqli_query($conn, $date_query);
+
+if ($date_result === false) {
+    die("Error executing date query: " . mysqli_error($conn));
+}
+
+$monthsYears = [];
+while ($row = mysqli_fetch_assoc($date_result)) {
+    $monthsYears[] = $row['month_year'];
+}
+
+// Default month and year to the first one in the list
+$selectedMonthYear = $monthsYears[0] ?? null;
+
+// Check if a month and year are selected from the form
+if (isset($_POST['selectedMonthYear'])) {
+    $selectedMonthYear = $_POST['selectedMonthYear'];
+}
+
+// Query to count occurrences per month for each risk category based on the selected month and year
+$sql = "SELECT 
+            DATE_FORMAT(date, '%M') AS month,
+            COUNT(CASE WHEN result = 'High Risk' THEN 1 END) AS high_risk_count,
+            COUNT(CASE WHEN result = 'Low Risk' THEN 1 END) AS low_risk_count,
+            COUNT(CASE WHEN result = 'Moderate Risk' THEN 1 END) AS moderate_risk_count
+        FROM food_monitoring
+        WHERE DATE_FORMAT(date, '%Y-%m') = '$selectedMonthYear'
+        GROUP BY month
+        ORDER BY month";
+
+$result_select = mysqli_query($conn, $sql);
+
+if ($result_select === false) {
+    die("Error executing query: " . mysqli_error($conn));
+}
+
+$months = [];
+$highRiskCounts = [];
+$lowRiskCounts = [];
+$moderateRiskCounts = [];
+
+while ($row = mysqli_fetch_assoc($result_select)) {
+    $months[] = $row['month'];
+    $highRiskCounts[] = $row['high_risk_count'];
+    $lowRiskCounts[] = $row['low_risk_count'];
+    $moderateRiskCounts[] = $row['moderate_risk_count'];
+}
+?>
+
+<div class="card shadow mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="text-primary fw-bold m-0">Risk Category Counts Per Month</h6>
+        <div class="form-group">
+            <!-- Create the month and year selection form -->
+            <form method="post">
+                <label for="monthYearSelect">Select Month and Year:</label>
+                <select name="selectedMonthYear" id="monthYearSelect" onchange="this.form.submit()">
+                    <?php
+                    foreach ($monthsYears as $monthYear) {
+                        echo "<option value=\"$monthYear\"";
+                        if ($selectedMonthYear === $monthYear) {
+                            echo " selected";
+                        }
+                        echo ">$monthYear</option>";
+                    }
+                    ?>
+                </select>
+            </form>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive mt-4">
+            <!-- Bar Chart -->
+            <canvas id="riskCategoryChart" width="400" height="224"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('riskCategoryChart').getContext('2d');
+    var months = <?php echo json_encode($months); ?>;
+    var highRiskCounts = <?php echo json_encode($highRiskCounts); ?>;
+    var lowRiskCounts = <?php echo json_encode($lowRiskCounts); ?>;
+    var moderateRiskCounts = <?php echo json_encode($moderateRiskCounts); ?>;
+
+    var barChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: months,
+            datasets: [
+                {
+                    label: 'High Risk',
+                    data: highRiskCounts,
+                    backgroundColor: 'red',
+                    borderWidth: 1,
+                },
+                {
+                    label: 'Moderate Risk',
+                    data: moderateRiskCounts,
+                    backgroundColor: 'yellow',
+                    borderWidth: 1,
+                },
+                {
+                    label: 'Low Risk',
+                    data: lowRiskCounts,
+                    backgroundColor: 'green',
+                    borderWidth: 1,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Month'
+                    }
+                },
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Count'
+                    },
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        }
+    });
+</script>
+</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="bg-white sticky-footer">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright"><span>Copyright @ iDentify 2023</span></div>
+                </div>
+            </footer>
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    </div>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/bs-init.js"></script>
+    <script src="assets/js/theme.js"></script>
+</body>
+
+</html>

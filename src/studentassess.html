@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Table - Brand</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Aclonica&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Adamina&amp;display=swap">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="assets/css/Bootstrap-4-Calendar-No-Custom-Code.css">
+    <link rel="stylesheet" href="assets/css/Icon-Button.css">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0" style="background: url(&quot;assets/img/blue.jpg&quot;);">
+            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+                    <div class="sidebar-brand-icon rotate-n-15"><img src="assets/img/364960463_1215282112492812_4229741986524435405_n.png" style="width: 100%;height: 50px;"></div>
+                    <div class="sidebar-brand-text mx-3"><span>iDentify<br></span></div>
+                </a>
+                <hr class="sidebar-divider my-0">
+                <ul class="navbar-nav text-light" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link" href="studentdash.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="studentprofile.php"><i class="fas fa-user"></i><span>Profile</span></a><a class="nav-link" href="studentprofile.php"><i class="fas fa-tooth"></i><span>Mouth Examination</span></a><a class="nav-link" href="studentprofile.php"><i class="fas fa-file-medical"></i><span>Medical History</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="studentmonitor.php"><i class="fas fa-chalkboard-teacher"></i><span>Food Monitoring</span></a></li>
+                    <li class="nav-item dropdown"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><i class="fas fa-chart-bar"></i>Profiling</a>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="studentassess.php">Oral Assessment</a><a class="dropdown-item" href="studentmonitoring.php">Food Intake Monitoring</a></div>
+                    </li>
+                </ul>
+                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content">
+                <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
+                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                        <ul class="navbar-nav flex-nowrap ms-auto">
+                            <li class="nav-item dropdown d-sm-none no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><i class="fas fa-search"></i></a>
+                                <div class="dropdown-menu dropdown-menu-end p-3 animated--grow-in" aria-labelledby="searchDropdown">
+                                    <form class="me-auto navbar-search w-100">
+                                        <div class="input-group"><input class="bg-light form-control border-0 small" type="text" placeholder="Search for ...">
+                                            <div class="input-group-append"><button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown no-arrow mx-1"><div class="nav-item dropdown no-arrow">
+    <a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#">
+        <div>
+            <?php
+            include 'setup.php';
+
+            // Sanitize user input
+            $student_id = (isset($_SESSION['student_id'])) ? intval($_SESSION['student_id']) : 0;
+
+            // Initialize a variable to store pending appointment notifications
+            $pendingAppointmentsHtml = '';
+
+            // Directly embed the value into the SQL query (not recommended for user input)
+            $sql = "SELECT description, date, status FROM appointment WHERE student_id = $student_id AND status IN ('Rescheduled', 'Approved')";
+            $result = $conn->query($sql);
+            
+            // ... rest of your code
+                        $result = $conn->query($sql);
+
+            // Count the number of unseen notifications
+            $unseenCount = 0;
+
+            if ($result && $result->num_rows > 0) {
+                // Loop through pending appointments
+                while ($row = $result->fetch_assoc()) {
+                    $description = htmlspecialchars($row['description']); // Escape output
+                    $status = htmlspecialchars($row['status']); // Escape output
+                    $date = htmlspecialchars($row['date']); // Escape output
+
+                    // Concatenate notification message to the variable
+                    $pendingAppointmentsHtml .= '
+                    <a class="dropdown-item d-flex align-items-center" href="studentdash.php" style="text-decoration: none; color: inherit;">
+                        <div class="me-3">
+                            <div class="bg-primary icon-circle"><i class="fas fa-calendar-alt text-white"></i></div>
+                        </div>
+                        <div>
+                            <span class="small text-gray-500">' . $status . '</span>
+                            <p>' . $description . ' ' . $date . ' </p>
+                        </div>
+                    </a>
+                    ';
+
+                    $unseenCount++;
+                }
+
+                // No need to close the result set for a simple query
+            }
+
+            // Output notification icon with badge
+            echo '<i class="fas fa-bell fa-fw"></i>';
+            echo '<span class="badge bg-danger badge-counter">' . $unseenCount . '</span>';
+            ?>
+        </div>
+    </a>
+    <div class="dropdown-menu dropdown-menu-end dropdown-list animated--grow-in" style="max-height: 200px; overflow-y: auto;">
+        <h6 class="dropdown-header">Notifications</h6>
+        <!-- Output the concatenated notification messages -->
+        <?php echo $pendingAppointmentsHtml; ?>
+    </div>
+</div>
+</li>
+                            <li class="nav-item dropdown no-arrow">
+                                <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><?php
+include 'setup.php';
+
+// Assuming you have a user_id stored in the session (replace this with your actual session variable)
+$user_id = $_SESSION['user_id'];
+
+// Fetch the first_name and last_name from the user table
+$query = "SELECT first_name, last_name FROM users WHERE id = '$user_id'";
+$result = mysqli_query($conn, $query);
+
+if (mysqli_num_rows($result) == 1) {
+    $row = mysqli_fetch_assoc($result);
+    $first_name = $row['first_name'];
+    $last_name = $row['last_name'];
+    
+    // Output the data within the HTML span element
+    echo '<span class="d-none d-lg-inline me-2 text-gray-600 small">' . $first_name . ' ' . $last_name . '</span>';
+} else {
+    echo '<span class="d-none d-lg-inline me-2 text-gray-600 small">User not found</span>';
+}
+?>
+</a>
+                                    <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in"><a class="dropdown-item" href="studentprofile.php"><i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Profile</a>
+                                        <div class="dropdown-divider"></div><a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Logout</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="container-fluid">
+                    <h3 class="text-dark mb-4" style="font-family: 'Abril Fatface', serif;"><strong>Oral Health Assessment Results</strong></h3>
+                    <div class="row">
+                        <div class="col-lg-12 col-xl-12 col-xxl-12"><?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+// Initialize months and years arrays
+$months = [];
+$years = [];
+
+// Retrieve distinct months and years from the database
+$sql_dates = "SELECT DISTINCT DATE_FORMAT(date, '%m') AS month, DATE_FORMAT(date, '%Y') AS year
+              FROM dental_assessment 
+              WHERE student_id = '$student_id'
+              ORDER BY year DESC, month DESC";
+
+$result_dates = mysqli_query($conn, $sql_dates);
+
+// Fetch distinct months and years from the database
+while ($row_dates = mysqli_fetch_assoc($result_dates)) {
+    $months[$row_dates['month']] = date('F', mktime(0, 0, 0, $row_dates['month'], 1));
+    $years[$row_dates['year']] = $row_dates['year'];
+}
+
+// Check if the form is submitted and update selected month and year values
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $selected_month = $_POST['month'];
+    $selected_year = $_POST['year'];
+} else {
+    // Retrieve selected month and year values, default to the latest month and year
+    $selected_month = $_GET['month'] ?? key($months);
+    $selected_year = $_GET['year'] ?? key($years);
+}
+
+$sql = "SELECT 
+            month_year,
+            result_message, 
+            SUM(count_results) as sum_results 
+        FROM (
+            SELECT 
+                DATE_FORMAT(date, '%Y-%m') AS month_year,
+                CASE
+                    WHEN total_results > 6 THEN 'Immediate Action Required!'
+                    WHEN total_results > 4 AND total_results <= 6 THEN 'Addressing Oral Health Issues!'
+                    WHEN total_results > 2 AND total_results <= 4 THEN 'Moderate Oral Health Issues!'
+                    WHEN total_results = 2 THEN 'Watch for changes!'
+                    WHEN total_results = 1 THEN 'Good oral health!'
+                    WHEN total_results < 0 THEN 'Excellent oral hygiene!'
+                    ELSE 'Your dental assessment is in a normal range.'
+                END AS result_message, 
+                COUNT(*) as count_results 
+            FROM dental_assessment 
+            WHERE student_id = '$student_id'
+            GROUP BY month_year, result_message
+        ) AS subquery
+        GROUP BY month_year, result_message";
+
+$result = mysqli_query($conn, $sql);
+
+// Initialize arrays to store data for each result message
+$data = [
+    'Immediate Action Required!' => [],
+    'Addressing Oral Health Issues!' => [],
+    'Moderate Oral Health Issues!' => [],
+    'Watch for changes!' => [],
+    'Good oral health!' => [],
+    'Excellent oral hygiene!' => [],
+    'Your dental assessment is in a normal range.' => [],
+];
+
+// Fetch data and organize it
+while ($row = mysqli_fetch_assoc($result)) {
+    $data[$row['result_message']][$row['month_year']] = $row['sum_results'];
+}
+
+// Close database connection
+mysqli_close($conn);
+?>
+
+<div class="card shadow mb-4">
+    <div class="card-body text-center">
+        <div class="row">
+            <div class="col">
+                <div class="row mt-4 justify-content-center">
+                    <div class="col-md-4">
+                        <form id="monthYearForm" method="post">
+                            <label for="month">Select Month:</label>
+                            <select class="form-control" name="month" id="monthSelect">
+                                <?php foreach ($months as $month_num => $month_name) : ?>
+                                    <option value="<?php echo $month_num; ?>" <?php echo ($selected_month == $month_num) ? 'selected' : ''; ?>><?php echo $month_name; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </form>
+                    </div>
+                    <div class="col-md-4">
+                        <form id="monthYearForm" method="post">
+                            <label for="year">Select Year:</label>
+                            <select class="form-control" name="year" id="yearSelect">
+                                <?php foreach ($years as $year) : ?>
+                                    <option value="<?php echo $year; ?>" <?php echo ($selected_year == $year) ? 'selected' : ''; ?>><?php echo $year; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </form>
+                    </div>
+                </div>
+                <div class="chart-area mt-4">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>Immediate Action Required!</th>
+                                <th>Addressing Oral Health Issues!</th>
+                                <th>Moderate Oral Health Issues!</th>
+                                <th>Watch for changes!</th>
+                                <th>Good oral health!</th>
+                                <th>Excellent oral hygiene!</th>
+                                <th>Your dental assessment is in a normal range.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($months as $month_num => $month_name) : ?>
+                                <tr>
+                                    <td><?php echo $month_name; ?></td>
+                                    <?php foreach ($data as $message => $result_data) : ?>
+                                        <td><?php echo isset($result_data["$selected_year-$month_num"]) ? $result_data["$selected_year-$month_num"] : 0; ?></td>
+                                    <?php endforeach; ?>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // JavaScript to submit form when select option changes
+    document.getElementById('monthSelect').addEventListener('change', function() {
+        document.getElementById('monthYearForm').submit();
+    });
+
+    document.getElementById('yearSelect').addEventListener('change', function() {
+        document.getElementById('monthYearForm').submit();
+    });
+</script>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="card">
+                                        <div class="card-body"><?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sql_date = "SELECT date FROM dental_assessment WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$result_date = mysqli_query($conn, $sql_date);
+
+if ($result_date) {
+    if (mysqli_num_rows($result_date) > 0) {
+        $row_date = mysqli_fetch_assoc($result_date);
+        $latest_date = $row_date['date'];
+
+        // Convert the date into words
+        $date_in_words = date("F j, Y", strtotime($latest_date));
+    } else {
+        $date_in_words = "No Data Available, go visit the dentist to have a proper dental assessment.";
+    }
+}
+
+echo "<h4><strong>Latest Assessment:</strong> $date_in_words</h4>";
+?>
+
+                                            <div class="row">
+                                                <div class="col-lg-4 col-xl-4 col-xxl-4">
+                                                    <h4><strong>Lips</strong></h4><?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sql = "SELECT lips FROM dental_assessment WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$result = mysqli_query($conn, $sql);
+
+if ($result) {
+    if (mysqli_num_rows($result) > 0) {
+        $row_date = mysqli_fetch_assoc($result);
+        $lips = $row_date['lips'];
+        
+        // Now, you can do the comparison and assign $message accordingly
+        if($lips >= 2){
+            $message = "Avoid lip products containing harsh chemicals to reduce the risk of irritation and allergic reactions.";
+        } else if ($lips == 1) {
+            $message = "Stay hydrated and be mindful of potential allergens in lip products to prevent dryness and irritation.";
+        } else if ($lips == 0) {
+            $message = "Maintain a balanced diet and practice good oral hygiene to promote overall lip health and prevent common issues.";
+        }
+    } else {
+        $message = "No dental assessment record found for this student.";
+    }
+} else {
+    $message = "Error: Unable to fetch dental assessment data.";
+}
+
+?>
+<p><?php echo $message; ?></p>
+
+                                                </div>
+                                                <div class="col-lg-4 col-xl-4 col-xxl-4">
+                                                    <h4><strong>Dental Pain</strong></h4><?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sql = "SELECT dental_pain FROM dental_assessment WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$result = mysqli_query($conn, $sql);
+
+if ($result) {
+    if (mysqli_num_rows($result) > 0) {
+        $row_date = mysqli_fetch_assoc($result);
+        $dental_pain = $row_date['dental_pain'];
+        
+        // Now, you can do the comparison and assign $message accordingly
+        if($dental_pain >= 2){
+            $message = "Seek immediate professional dental care if experiencing severe or persistent dental pain, as it may indicate serious underlying issues such as infection or tooth decay.";
+        } else if ($dental_pain == 1) {
+            $message = "Use over-the-counter pain relievers like ibuprofen or acetaminophen as directed by a healthcare professional to manage mild to moderate dental pain temporarily, while scheduling a dental appointment for further evaluation.";
+        } else if ($dental_pain == 0) {
+            $message = "Practice good oral hygiene, including regular brushing, flossing, and using fluoride-containing products, to prevent dental issues that could lead to pain or discomfort.";
+        }
+    } else {
+        $message = "No dental assessment record found for this student.";
+    }
+} else {
+    $message = "Error: Unable to fetch dental assessment data.";
+}
+
+?>
+<p><?php echo $message; ?></p>
+
+                                                </div>
+                                                <div class="col-lg-4 col-xl-4 col-xxl-4">
+                                                    <h4><strong>Natural Teeth</strong></h4><?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sql = "SELECT natural_teeth FROM dental_assessment WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$result = mysqli_query($conn, $sql);
+
+if ($result) {
+    if (mysqli_num_rows($result) > 0) {
+        $row_date = mysqli_fetch_assoc($result);
+        $natural_teeth = $row_date['natural_teeth'];
+        
+        // Now, you can do the comparison and assign $message accordingly
+        if($natural_teeth >= 2){
+            $message = "Avoid excessive consumption of acidic foods and beverages, as they can erode tooth enamel and increase the risk of tooth decay and sensitivity.";
+        } else if ($natural_teeth == 1) {
+            $message = "Maintain regular dental check-ups and cleanings to detect and address any potential issues early, helping to preserve the natural structure and health of your teeth.";
+        } else if ($natural_teeth == 0) {
+            $message = "Adopt a balanced diet rich in calcium and vitamin D to support strong teeth, and practice good oral hygiene habits such as brushing twice daily and flossing to prevent decay and maintain the natural integrity of your teeth.";
+        }
+    } else {
+        $message = "No dental assessment record found for this student.";
+    }
+} else {
+    $message = "Error: Unable to fetch dental assessment data.";
+}
+
+?>
+<p><?php echo $message; ?></p>
+
+                                                </div>
+                                                <div class="col-lg-4 col-xl-4 col-xxl-4">
+                                                    <h4><strong>Dentures</strong></h4><?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sql = "SELECT dentures FROM dental_assessment WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$result = mysqli_query($conn, $sql);
+
+if ($result) {
+    if (mysqli_num_rows($result) > 0) {
+        $row_date = mysqli_fetch_assoc($result);
+        $dentures = $row_date['dentures'];
+        
+        // Now, you can do the comparison and assign $message accordingly
+        if($dentures >= 2){
+            $message = "Clean dentures daily to prevent plaque buildup, bacteria, and infections, reducing the risk of gum disease and bad breath.";
+        } else if ($dentures == 1) {
+            $message = "Remove dentures at night to allow oral tissues to rest, minimizing irritation and inflammation.";
+        } else if ($dentures == 0) {
+            $message = "Handle dentures carefully, avoiding damage, and follow dentist's instructions for maintenance and check-ups.";
+        }
+    } else {
+        $message = "No dental assessment record found for this student.";
+    }
+} else {
+    $message = "Error: Unable to fetch dental assessment data.";
+}
+
+?>
+<p><?php echo $message; ?></p>
+
+                                                </div>
+                                                <div class="col-lg-4 col-xl-4 col-xxl-4">
+                                                    <h4><strong>Oral Cleanliness</strong></h4><?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sql = "SELECT oral_cleanliness FROM dental_assessment WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$result = mysqli_query($conn, $sql);
+
+if ($result) {
+    if (mysqli_num_rows($result) > 0) {
+        $row_date = mysqli_fetch_assoc($result);
+        $oral_cleanliness = $row_date['oral_cleanliness'];
+        
+        // Now, you can do the comparison and assign $message accordingly
+        if($oral_cleanliness >= 2){
+            $message = "Maintain thorough oral hygiene with daily brushing, flossing, and mouthwash use to prevent plaque buildup and gum disease.";
+        } else if ($oral_cleanliness == 1) {
+            $message = "Limit sugary and acidic foods, and consider using interdental brushes or water flossers for effective cleaning between teeth.";
+        } else if ($oral_cleanliness == 0) {
+            $message = "Schedule regular dental check-ups every six months and consider tongue scraping for fresh breath and reduced bacteria.";
+        }
+    } else {
+        $message = "No dental assessment record found for this student.";
+    }
+} else {
+    $message = "Error: Unable to fetch dental assessment data.";
+}
+
+?>
+<p><?php echo $message; ?></p>
+
+                                                </div>
+                                                <div class="col-lg-4 col-xl-4 col-xxl-4">
+                                                    <h4><strong>Saliva</strong></h4><?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sql = "SELECT saliva FROM dental_assessment WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$result = mysqli_query($conn, $sql);
+
+if ($result) {
+    if (mysqli_num_rows($result) > 0) {
+        $row_date = mysqli_fetch_assoc($result);
+        $saliva = $row_date['saliva'];
+        
+        // Now, you can do the comparison and assign $message accordingly
+        if($saliva >= 2){
+            $message = "Stay hydrated and avoid habits like smoking that can reduce saliva, leading to dry mouth and oral health issues.";
+        } else if ($saliva == 1) {
+            $message = "Stimulate saliva flow with sugar-free gum or candies, especially after meals.";
+        } else if ($saliva == 0) {
+            $message = "Drink plenty of water and limit caffeine to maintain saliva production and oral health.";
+        }
+    } else {
+        $message = "No dental assessment record found for this student.";
+    }
+} else {
+    $message = "Error: Unable to fetch dental assessment data.";
+}
+
+?>
+<p><?php echo $message; ?></p>
+
+                                                </div>
+                                                <div class="col-lg-4 col-xl-4 col-xxl-4">
+                                                    <h4><strong>Tongue</strong></h4><?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sql = "SELECT tongue FROM dental_assessment WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$result = mysqli_query($conn, $sql);
+
+if ($result) {
+    if (mysqli_num_rows($result) > 0) {
+        $row_date = mysqli_fetch_assoc($result);
+        $tongue = $row_date['tongue'];
+        
+        // Now, you can do the comparison and assign $message accordingly
+        if($tongue >= 2){
+            $message = "Practice good oral hygiene by gently brushing your tongue daily to remove bacteria and prevent bad breath and oral infections.";
+        } else if ($tongue == 1) {
+            $message = "Consider using a tongue scraper to effectively remove food particles and bacteria from the surface of your tongue, promoting fresher breath and improved oral health.";
+        } else if ($tongue == 0) {
+            $message = "Maintain a balanced diet and avoid tobacco use to reduce the risk of oral health issues such as oral cancer and tongue discoloration.";
+        }
+    } else {
+        $message = "No dental assessment record found for this student.";
+    }
+} else {
+    $message = "Error: Unable to fetch dental assessment data.";
+}
+
+?>
+<p><?php echo $message; ?></p>
+
+                                                </div>
+                                                <div class="col-lg-4 col-xl-4 col-xxl-4">
+                                                    <h4><strong>Gums and Tissues</strong></h4><?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sql = "SELECT gum_and_tissues FROM dental_assessment WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$result = mysqli_query($conn, $sql);
+
+if ($result) {
+    if (mysqli_num_rows($result) > 0) {
+        $row_date = mysqli_fetch_assoc($result);
+        $gum_and_tissues = $row_date['gum_and_tissues'];
+        
+        // Now, you can do the comparison and assign $message accordingly
+        if($gum_and_tissues >= 2){
+            $message = "Ensure proper oral hygiene, including brushing and flossing gently around the gumline, to prevent gum disease and tissue inflammation.";
+        } else if ($gum_and_tissues == 1) {
+            $message = "Use a soft-bristled toothbrush and avoid aggressive brushing to prevent damage to delicate gum tissues and reduce the risk of recession and sensitivity.";
+        } else if ($gum_and_tissues == 0) {
+            $message = "Maintain a balanced diet rich in vitamins and minerals to support healthy gum tissues, and consider using an antimicrobial mouthwash to help control bacteria and reduce the risk of gum disease.";
+        }
+    } else {
+        $message = "No dental assessment record found for this student.";
+    }
+} else {
+    $message = "Error: Unable to fetch dental assessment data.";
+}
+
+?>
+<p><?php echo $message; ?></p>
+
+                                                </div>
+                                                <div class="col-lg-4 col-xl-4">
+                                                    <h4><strong>Oral Hygiene</strong></h4><?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sql = "SELECT oral_hygiene FROM dental_assessment WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$result = mysqli_query($conn, $sql);
+
+if ($result) {
+    if (mysqli_num_rows($result) > 0) {
+        $row_date = mysqli_fetch_assoc($result);
+        $oral_hygiene = $row_date['oral_hygiene'];
+        
+        // Now, you can do the comparison and assign $message accordingly
+        if($oral_hygiene >= 2){
+            $message = "Brush teeth twice daily with fluoride toothpaste, floss daily, and use an antiseptic mouthwash to prevent plaque buildup and gum disease.";
+        } else if ($oral_hygiene == 1) {
+            $message = "Limit sugary and acidic foods, and consider using interdental brushes or water flossers for effective cleaning between teeth.";
+        } else if ($oral_hygiene == 0) {
+            $message = "Schedule regular dental check-ups every six months, and consider tongue scraping for fresh breath and reduced bacteria.";
+        }
+    } else {
+        $message = "No dental assessment record found for this student.";
+    }
+} else {
+    $message = "Error: Unable to fetch dental assessment data.";
+}
+
+?>
+<p><?php echo $message; ?></p>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="bg-white sticky-footer">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright"><span>Copyright @ iDentify 2023</span></div>
+                </div>
+            </footer>
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    </div>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/bs-init.js"></script>
+    <script src="assets/js/theme.js"></script>
+</body>
+
+</html>

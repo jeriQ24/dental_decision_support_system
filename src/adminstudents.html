@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Table - Brand</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Aclonica&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Adamina&amp;display=swap">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="assets/css/Bootstrap-4-Calendar-No-Custom-Code.css">
+    <link rel="stylesheet" href="assets/css/Icon-Button.css">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0" style="background: url(&quot;assets/img/blu3.jpg&quot;);">
+            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+                    <div class="sidebar-brand-icon rotate-n-15"><img src="assets/img/364960463_1215282112492812_4229741986524435405_n.png" style="width: 100%;height: 50px;"></div>
+                    <div class="sidebar-brand-text mx-3"><span>iDentify<br></span></div>
+                </a>
+                <hr class="sidebar-divider my-0">
+                <ul class="navbar-nav text-light" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link" href="admindash.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                    <li class="nav-item"></li>
+                    <li class="nav-item"><a class="nav-link" href="adminstudents.php"><i class="fas fa-user-friends"></i><span>Students</span></a></li>
+                    <li class="nav-item dropdown"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><i class="fas fa-file-medical-alt"></i>Profiling</a>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="adminassessment.php">Oral Assessment</a><a class="dropdown-item" href="adminmonitoring.php">Food Monitoring</a></div>
+                    </li>
+                </ul>
+                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content">
+                <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
+                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                        <ul class="navbar-nav flex-nowrap ms-auto">
+                            <li class="nav-item dropdown d-sm-none no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><i class="fas fa-search"></i></a>
+                                <div class="dropdown-menu dropdown-menu-end p-3 animated--grow-in" aria-labelledby="searchDropdown">
+                                    <form class="me-auto navbar-search w-100">
+                                        <div class="input-group"><input class="bg-light form-control border-0 small" type="text" placeholder="Search for ...">
+                                            <div class="input-group-append"><button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown no-arrow mx-1"><div class="nav-item dropdown no-arrow">
+    <a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#">
+        <div>
+            <?php
+            include 'setup.php';
+
+            // Initialize a variable to store pending appointment notifications
+            $pendingAppointmentsHtml = '';
+
+            // Select pending appointments with details
+            $sql = "SELECT first_name, last_name, description, date FROM appointment WHERE status = 'Pending'";
+            $result = $conn->query($sql);
+
+            // Count the number of unseen notifications
+            $unseenCount = 0;
+
+            if ($result && $result->num_rows > 0) {
+                // Loop through pending appointments
+                while ($row = $result->fetch_assoc()) {
+                    $firstName = $row['first_name'];
+                    $lastName = $row['last_name'];
+                    $description = $row['description'];
+                    $date = $row['date'];
+
+                    // Concatenate notification message to the variable
+                    $pendingAppointmentsHtml .= '
+                    <a class="dropdown-item d-flex align-items-center" href="admindash.php?modal=pendingModal" style="text-decoration: none; color: inherit;">
+                        <div class="me-3">
+                            <div class="bg-primary icon-circle"><i class="fas fa-calendar-alt text-white"></i></div>
+                        </div>
+                        <div>
+                            <span class="small text-gray-500">' . $firstName . ' ' . $lastName . '</span>
+                            <p>' . $description . ' ' . $date . ' </p>
+                        </div>
+                    </a>
+                    ';
+                    
+                    $unseenCount++;
+                }
+
+                $result->free(); // Free the result set
+            }
+
+            // Output notification icon with badge
+            echo '<i class="fas fa-bell fa-fw"></i>';
+            echo '<span class="badge bg-danger badge-counter">' . $unseenCount . '</span>';
+            ?>
+        </div>
+    </a>
+    <div class="dropdown-menu dropdown-menu-end dropdown-list animated--grow-in" style="max-height: 200px; overflow-y: auto;">
+        <h6 class="dropdown-header">Notifications</h6>
+        <!-- Output the concatenated notification messages -->
+        <?php echo $pendingAppointmentsHtml; ?>
+    </div>
+</div>
+
+</li>
+                            <li class="nav-item dropdown no-arrow">
+                                <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><?php
+include 'setup.php';
+
+// Assuming you have a user_id stored in the session (replace this with your actual session variable)
+$admin_id = $_SESSION['admin_id'];
+
+
+// Fetch the first_name and last_name from the user table
+$query = "SELECT first_name, last_name FROM admin WHERE id = '$admin_id'";
+$result = mysqli_query($conn, $query);
+
+if (mysqli_num_rows($result) == 1) {
+    $row = mysqli_fetch_assoc($result);
+    $first_name = $row['first_name'];
+    $last_name = $row['last_name'];
+    
+    // Output the data within the HTML span element
+    echo '<span class="d-none d-lg-inline me-2 text-gray-600 small">' . $first_name . ' ' . $last_name . '</span>';
+} else {
+    echo '<span class="d-none d-lg-inline me-2 text-gray-600 small">User not found</span>';
+}
+?>
+</a>
+                                    <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in"><a class="dropdown-item" href="admineditprofile.php"><i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Profile</a>
+                                        <div class="dropdown-divider"></div><a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Logout</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="container-fluid">
+                    <h3 class="text-dark mb-4" style="font-family: 'Abril Fatface', serif;"><strong>Student Profile</strong></h3>
+                    <div class="card shadow">
+                        <div class="card-header py-3">
+                            <p class="text-primary m-0 fw-bold">Student Info</p>
+                        </div><?php
+include 'setup.php';
+
+
+// Fetch data from the users table
+$sql = "SELECT CONCAT(first_name, ' ', last_name) AS full_name, email, course, student_id FROM users";
+$result = $conn->query($sql);
+?>
+
+
+<div class="card-body">
+    <div class="row">
+        <div class="col-md-6 text-nowrap">
+            <div id="dataTable_length" class="dataTables_length" aria-controls="dataTable">
+                <label class="form-label">Show
+                    <select class="d-inline-block form-select form-select-sm" id="rowsPerPage" onchange="updateTable()">
+                        <option value="10" selected>10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div id="dataTable_filter" class="text-md-end dataTables_filter">
+                <label class="form-label">
+                    <input class="form-control form-control-sm" type="search" id="searchInput" aria-controls="dataTable" placeholder="Search" onkeyup="filterTable()" />
+                </label>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="dataTable-1" class="table-responsive table mt-2" role="grid" aria-describedby="dataTable_info">
+        <table id="dataTable" class="table my-0">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Student ID</th>
+                    <th>Course</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                if ($result && $result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        echo '<tr>';
+                        echo '<td><a href="adminstudentprofile.php?student_id=' . $row['student_id'] . '">' . $row['full_name'] . '</a></td>';
+                        echo '<td>' . $row['email'] . '</td>';
+                        echo '<td>' . $row['student_id'] . '</td>';
+                        echo '<td>' . $row['course'] . '</td>';
+                        echo '</tr>';
+                    }
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-6 align-self-center">
+            <p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite">Showing 1 to 10 of <?php echo $result->num_rows; ?></p>
+        </div>
+        <div class="col-md-6">
+            <nav id="pagination" class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
+                <!-- Pagination links will be added dynamically here -->
+            </nav>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var rowsPerPageSelect = document.getElementById("rowsPerPage");
+    var table = document.getElementById("dataTable");
+    var searchInput = document.getElementById("searchInput");
+
+
+    function updateTable() {
+        // Get the selected number of rows per page
+        var rowsPerPage = rowsPerPageSelect.value;
+
+
+        // Show the first page and update pagination links
+        showPage(1);
+        updatePagination();
+    }
+
+
+    function filterTable() {
+        // Apply the filter and update pagination
+        showPage(1);
+        updatePagination();
+    }
+
+
+    function showPage(pageNumber) {
+        // Get the selected number of rows per page
+        var rowsPerPage = rowsPerPageSelect.value;
+
+
+        // Filter the rows based on the search input
+        var filteredRows = filterRows();
+
+
+        // Calculate the start and end index of the current page
+        var startIndex = (pageNumber - 1) * rowsPerPage;
+        var endIndex = startIndex + parseInt(rowsPerPage);
+
+
+        // Display the rows for the current page and hide others
+        for (var i = 0; i < filteredRows.length; i++) {
+            if (i >= startIndex && i < endIndex) {
+                filteredRows[i].style.display = "";
+            } else {
+                filteredRows[i].style.display = "none";
+            }
+        }
+
+
+        // Update the info message
+        var infoMessage = document.getElementById("dataTable_info");
+        infoMessage.textContent = "Showing " + (startIndex + 1) + " to " + Math.min(endIndex, filteredRows.length) + " of " + filteredRows.length;
+    }
+
+
+    function filterRows() {
+        // Get all rows from the table body
+        var rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+
+
+        // Get the filter value
+        var filter = searchInput.value.toUpperCase();
+
+
+        // Filter the rows based on the search query
+        var filteredRows = [];
+        for (var i = 0; i < rows.length; i++) {
+            var found = false;
+            // Loop through all cells in the current row
+            for (var j = 0; j < rows[i].cells.length; j++) {
+                var cell = rows[i].cells[j];
+                var textValue = cell.textContent || cell.innerText;
+                if (textValue.toUpperCase().indexOf(filter) > -1) {
+                    found = true;
+                    break;
+                }
+            }
+            // If the row contains the search query, add it to the filteredRows array
+            if (found) {
+                filteredRows.push(rows[i]);
+            }
+        }
+
+
+        return filteredRows;
+    }
+
+
+    function updatePagination() {
+        // Get the selected number of rows per page
+        var rowsPerPage = rowsPerPageSelect.value;
+
+
+        // Filter the rows based on the search input
+        var filteredRows = filterRows();
+
+
+        // Calculate the total number of pages
+        var totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+
+
+        // Get the pagination element
+        var pagination = document.getElementById("pagination");
+        pagination.innerHTML = "";
+
+
+        // Add pagination links dynamically
+        for (var i = 1; i <= totalPages; i++) {
+            var pageLink = document.createElement("a");
+            pageLink.href = "javascript:void(0);";
+            pageLink.textContent = i;
+            pageLink.onclick = (function (pageNumber) {
+                return function () {
+                    showPage(pageNumber);
+                };
+            })(i);
+
+
+            // Highlight the current page
+            if (i === 1) {
+                pageLink.className = "page-link active";
+            } else {
+                pageLink.className = "page-link";
+            }
+
+
+            var pageItem = document.createElement("li");
+            pageItem.className = "page-item";
+            pageItem.appendChild(pageLink);
+
+
+            pagination.appendChild(pageItem);
+        }
+    }
+
+
+    // Initial setup
+    updateTable();
+</script>
+
+
+<?php
+$conn->close();
+?>
+
+
+
+                    </div>
+                </div>
+            </div>
+            <footer class="bg-white sticky-footer">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright"><span>Copyright @ iDentify 2023</span></div>
+                </div>
+            </footer>
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    </div>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/bs-init.js"></script>
+    <script src="assets/js/theme.js"></script>
+</body>
+
+</html>

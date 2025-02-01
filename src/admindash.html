@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Dashboard - Brand</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Aclonica&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Adamina&amp;display=swap">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="assets/css/Bootstrap-4-Calendar-No-Custom-Code.css">
+    <link rel="stylesheet" href="assets/css/Icon-Button.css">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0" style="background: url(&quot;assets/img/blu3.jpg&quot;);">
+            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+                    <div class="sidebar-brand-icon rotate-n-15"><img src="assets/img/364960463_1215282112492812_4229741986524435405_n.png" style="width: 100%;height: 50px;"></div>
+                    <div class="sidebar-brand-text mx-3"><span>iDentify<br></span></div>
+                </a>
+                <hr class="sidebar-divider my-0">
+                <ul class="navbar-nav text-light" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link" href="admindash.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                    <li class="nav-item"></li>
+                    <li class="nav-item"><a class="nav-link" href="adminstudents.php"><i class="fas fa-user-friends"></i><span>Students</span></a><a class="nav-link" href="adminstudent_oral_assessment.php"><i class="fas fa-file-medical-alt"></i><span>Oral Health Assessment</span></a><a class="nav-link" href="adminstudent_mouth_examination.php"><i class="fas fa-tooth"></i><span>Mouth Examination</span></a><a class="nav-link" href="adminstudent_medical_history.php"><i class="fas fa-file-medical"></i><span>Medical History</span></a></li>
+                    <li class="nav-item dropdown"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><i class="fas fa-file-medical-alt"></i>Profiling</a>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="adminassessment.php">Oral Assessment</a><a class="dropdown-item" href="adminmonitoring.php">Food Monitoring</a></div>
+                    </li>
+                </ul>
+                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content">
+                <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
+                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                        <ul class="navbar-nav flex-nowrap ms-auto">
+                            <li class="nav-item dropdown d-sm-none no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><i class="fas fa-search"></i></a>
+                                <div class="dropdown-menu dropdown-menu-end p-3 animated--grow-in" aria-labelledby="searchDropdown">
+                                    <form class="me-auto navbar-search w-100">
+                                        <div class="input-group"><input class="bg-light form-control border-0 small" type="text" placeholder="Search for ...">
+                                            <div class="input-group-append"><button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown no-arrow mx-1"><div class="nav-item dropdown no-arrow">
+    <a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#">
+        <div>
+            <?php
+            include 'setup.php';
+
+            // Initialize a variable to store pending appointment notifications
+            $pendingAppointmentsHtml = '';
+
+            // Select pending appointments with details
+            $sql = "SELECT first_name, last_name, description, date FROM appointment WHERE status = 'Pending'";
+            $result = $conn->query($sql);
+
+            // Count the number of unseen notifications
+            $unseenCount = 0;
+
+            if ($result && $result->num_rows > 0) {
+                // Loop through pending appointments
+                while ($row = $result->fetch_assoc()) {
+                    $firstName = $row['first_name'];
+                    $lastName = $row['last_name'];
+                    $description = $row['description'];
+                    $date = $row['date'];
+
+
+                    // Concatenate notification message to the variable
+                    $pendingAppointmentsHtml .= '
+                    <a class="dropdown-item d-flex align-items-center" href="#pendingModal" data-bs-toggle="modal" data-bs-target="#pendingModal" style="text-decoration: none; color: inherit;">
+                        <div class="me-3">
+                            <div class="bg-primary icon-circle"><i class="fas fa-calendar-alt text-white"></i></div>
+                        </div>
+                        <div>
+                            <span class="small text-gray-500">' . $firstName . ' ' . $lastName . '</span>
+                            <p>' . $description . ' ' . $date . ' </p>
+                        </div>
+                    </a>';                    
+                    
+                    $unseenCount++;
+                }
+
+                $result->free(); // Free the result set
+            }
+
+            // Output notification icon with badge
+            echo '<i class="fas fa-bell fa-fw"></i>';
+            echo '<span class="badge bg-danger badge-counter">' . $unseenCount . '</span>';
+            ?>
+        </div>
+    </a>
+    <div class="dropdown-menu dropdown-menu-end dropdown-list animated--grow-in" style="max-height: 200px; overflow-y: auto;">
+        <h6 class="dropdown-header">Notifications</h6>
+        <!-- Output the concatenated notification messages -->
+        <?php echo $pendingAppointmentsHtml; ?>
+    </div>
+</div>
+</li>
+                            <li class="nav-item dropdown no-arrow">
+                                <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><?php
+include 'setup.php';
+
+// Assuming you have a user_id stored in the session (replace this with your actual session variable)
+$admin_id = $_SESSION['admin_id'];
+
+
+// Fetch the first_name and last_name from the user table
+$query = "SELECT first_name, last_name FROM admin WHERE id = '$admin_id'";
+$result = mysqli_query($conn, $query);
+
+if (mysqli_num_rows($result) == 1) {
+    $row = mysqli_fetch_assoc($result);
+    $first_name = $row['first_name'];
+    $last_name = $row['last_name'];
+    
+    // Output the data within the HTML span element
+    echo '<span class="d-none d-lg-inline me-2 text-gray-600 small">' . $first_name . ' ' . $last_name . '</span>';
+} else {
+    echo '<span class="d-none d-lg-inline me-2 text-gray-600 small">User not found</span>';
+}
+?>
+</a>
+                                    <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in"><a class="dropdown-item" href="admineditprofile.php"><i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Profile</a>
+                                        <div class="dropdown-divider"></div><a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Logout</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="container-fluid">
+                    <div class="d-sm-flex justify-content-between align-items-center mb-4">
+                        <h3 class="text-dark mb-0" style="background: url(&quot;https://cdn.bootstrapstudio.io/placeholders/1400x800.png&quot;);font-family: 'Abril Fatface', serif;"><strong>Dashboard</strong></h3>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-xl-3 mb-4"><?php
+// Assuming you have a database connection established
+
+// Query to get the total number of students
+$query = "SELECT COUNT(*) as total_students FROM users";
+$result = mysqli_query($conn, $query);
+
+if ($result) {
+    $row = mysqli_fetch_assoc($result);
+    $totalStudents = $row['total_students'];
+} else {
+    // Handle the query error
+    $totalStudents = "N/A";
+}
+?>
+
+<!-- HTML structure with the total number of students -->
+<div class="card shadow border-start-primary py-2" style="height: 112px;">
+    <div class="card-body">
+        <div class="row align-items-center no-gutters">
+            <div class="col me-2">
+                <div class="text-uppercase text-primary fw-bold text-xs mb-1">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#studentModal">Total Number of Students</a>
+                </div>
+                <div class="text-dark fw-bold h5 mb-0"><span><?php echo $totalStudents; ?></span></div>
+            </div>
+            <div class="col-auto"><i class="fas fa-users fa-2x text-gray-300"></i></div>
+        </div>
+    </div>
+</div></div>
+                        <div class="col-md-6 col-xl-3 mb-4"><?php
+// Assuming you have a database connection established
+include 'setup.php';
+
+// Get current date
+$currentDate = date('Y-m-d');
+
+// Query to count all rows in the verify_appointment table
+$query = "SELECT COUNT(*) as total_appointments FROM appointment WHERE status IN ('Pending', 'Rescheduled') AND date >= '$currentDate'";
+$result = mysqli_query($conn, $query);
+
+if ($result) {
+    $row = mysqli_fetch_assoc($result);
+    $totalpendingAppointments = $row['total_appointments'];
+} else {
+    // Handle the query error
+    $totalpendingAppointments = "N/A";
+}
+?>
+
+<!-- HTML structure with the total number of appointments -->
+<div class="card shadow border-start-primary py-2" style="height: 112px;">
+    <div class="card-body">
+        <div class="row align-items-center no-gutters">
+            <div class="col me-2">
+                <div class="text-uppercase text-primary fw-bold text-xs mb-1">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#pendingModal">Pending Appointments</a>
+                </div>
+                <div class="text-dark fw-bold h5 mb-0"><span><?php echo $totalpendingAppointments; ?></span></div>
+            </div>
+            <div class="col-auto"><i class="fas fa-hourglass fa-2x text-gray-300"></i></div>
+        </div>
+    </div>
+</div>
+</div>
+                        <div class="col-md-6 col-xl-3 mb-4"><?php
+// Assuming you have a database connection established
+include 'setup.php';
+
+// Query to count all rows in the verify_appointment table
+$query = 'SELECT COUNT(*) as total_appointments FROM appointment WHERE status = "Approved"';
+$result = mysqli_query($conn, $query);
+
+if ($result) {
+    $row = mysqli_fetch_assoc($result);
+    $totalAppointments = $row['total_appointments'];
+} else {
+    // Handle the query error
+    $totalAppointments = "N/A";
+}
+?>
+
+<!-- HTML structure with the total number of appointments -->
+<div class="card shadow border-start-primary py-2" style="height: 112px;">
+    <div class="card-body">
+        <div class="row align-items-center no-gutters">
+            <div class="col me-2">
+                <div class="text-uppercase text-primary fw-bold text-xs mb-1">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#approvedModal">Approved Appointments</a>
+                </div>
+                <div class="text-dark fw-bold h5 mb-0"><span><?php echo $totalAppointments; ?></span></div>
+            </div>
+            <div class="col-auto"><i class="fas fa-check fa-2x text-gray-300"></i></div>
+        </div>
+    </div>
+</div></div>
+                        <div class="col-md-6 col-xl-3 mb-4"><?php
+// Assuming you have a database connection established
+include 'setup.php';
+
+// Query to count all rows in the verify_appointment table
+$query = "SELECT COUNT(*) as total_appointments FROM appointment WHERE (status IN ('Pending', 'Rescheduled') AND date <= '$currentDate') OR (status = 'Declined')";
+$result = mysqli_query($conn, $query);
+
+if ($result) {
+    $row = mysqli_fetch_assoc($result);
+    $totalAppointments = $row['total_appointments'];
+} else {
+    // Handle the query error
+    $totalAppointments = "N/A";
+}
+?>
+<div class="card shadow border-start-primary py-2" style="height: 112px;">
+    <div class="card-body">
+        <div class="row align-items-center no-gutters">
+            <div class="col me-2">
+                <div class="text-uppercase text-primary fw-bold text-xs mb-1">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#rescheduledModal">Expired Appointments</a>
+                </div>
+                <div class="text-dark fw-bold h5 mb-0"><span><?php echo $totalAppointments; ?></span></div>
+            </div>
+            <div class="col-auto"><i class="fas fa-calendar fa-2x text-gray-300"></i></div>
+        </div>
+    </div>
+</div></div>
+                    </div>
+                    <div class="row" style="margin-top: 10px;">
+                        <div class="col-lg-7 col-xl-6"><?php
+include 'setup.php';
+
+// Query to get the count of students in each department
+$sql = "SELECT department, COUNT(*) AS count FROM users GROUP BY department";
+
+$result = mysqli_query($conn, $sql);
+
+// Initialize arrays to store department names and corresponding counts
+$departments = array();
+$counts = array();
+
+// Fetch data from the query result
+while ($row = mysqli_fetch_assoc($result)) {
+    $departments[] = $row['department'];
+    $counts[] = $row['count'];
+}
+
+// Convert arrays to JSON format for use in JavaScript
+$departments_json = json_encode($departments);
+$counts_json = json_encode($counts);
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registered Students</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="card shadow mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h6 class="text-primary fw-bold m-0">Registered Students</h6>
+            <!-- Add select option for department -->
+            <select style="width: 50%;" class="form-control" id="departmentSelect" onchange="updateChart(this)">
+                <option value="all">All Departments</option>
+                <?php
+                // Loop through departments to create options
+                foreach ($departments as $department) {
+                    echo "<option value='$department'>$department</option>";
+                }
+                ?>
+            </select>
+        </div>
+        <div class="card-body">
+            <canvas id="departmentChart" height="200"></canvas>
+            <div id="legend" class="mt-3"></div> <!-- Legend container -->
+        </div>
+    </div>
+
+    <script>
+        // Parse JSON data from PHP
+        var departments = <?php echo $departments_json; ?>;
+        var counts = <?php echo $counts_json; ?>;
+
+        // Get the canvas element
+        var ctx = document.getElementById('departmentChart').getContext('2d');
+
+        // Create the initial bar chart with all departments
+        var departmentChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: departments,
+                datasets: [{
+                    label: 'Number of Students',
+                    data: counts,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)', // Blue color with transparency
+                    borderColor: 'rgba(54, 162, 235, 1)', // Blue color
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true // Start y-axis from zero
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true // Hide the legend initially
+                    }
+                }
+            }
+        });
+
+        // Function to update chart based on selected department
+        function updateChart(select) {
+            var selectedDepartment = select.value;
+
+            if (selectedDepartment === 'all') {
+                // Display all departments
+                departmentChart.data.labels = departments;
+                departmentChart.data.datasets[0].data = counts;
+            } else {
+                // Filter departments and counts based on selected department
+                var filteredDepartments = [];
+                var filteredCounts = [];
+
+                for (var i = 0; i < departments.length; i++) {
+                    if (departments[i].includes(selectedDepartment)) {
+                        filteredDepartments.push(departments[i]);
+                        filteredCounts.push(counts[i]);
+                    }
+                }
+
+                // Update the chart data for the selected department
+                departmentChart.data.labels = filteredDepartments;
+                departmentChart.data.datasets[0].data = filteredCounts;
+            }
+
+            // Update the chart
+            departmentChart.update();
+
+            // Show or hide the legend based on the selected option
+            var legend = document.getElementById('legend');
+            if (selectedDepartment === 'all') {
+                legend.innerHTML = ''; // Clear legend if all departments are selected
+            } else {
+                // Get the index of the selected department
+                var index = departments.indexOf(selectedDepartment);
+
+                // Show the legend with the selected department and its count
+                legend.innerHTML = `
+                    <div class="alert alert-info" role="alert">
+                        You selected ${selectedDepartment} department with ${counts[index]} students.
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+
+</html>
+</div>
+                        <div class="col-lg-7 col-xl-6"><?php
+include 'setup.php';
+
+// Check if a specific year is selected, default to current year if not
+$selectedYear = isset($_GET['year']) ? $_GET['year'] : date('Y');
+
+// SQL query to fetch data for the selected year
+$sqlDept = "SELECT 
+            MONTH(date) AS month, description,
+            SUM(CASE WHEN description = 'Oral Prophylaxis' THEN 1 ELSE 0 END) AS oral_prophylaxis,
+            SUM(CASE WHEN description = 'Restoration' THEN 1 ELSE 0 END) AS restoration,
+            SUM(CASE WHEN description = 'Consultation' THEN 1 ELSE 0 END) AS consultation
+            FROM appointment
+            WHERE YEAR(date) = $selectedYear
+            GROUP BY month
+            ORDER BY month";
+
+$description = mysqli_query($conn, $sqlDept);
+
+$months = [];
+$oralProphylaxis = [];
+$restoration = [];
+$consultation = [];
+
+while ($row = mysqli_fetch_assoc($description)) {
+    $months[] = date("F", mktime(0, 0, 0, $row['month'], 1)); // Convert month number to month name
+    $oralProphylaxis[] = $row['oral_prophylaxis'];
+    $restoration[] = $row['restoration'];
+    $consultation[] = $row['consultation'];
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dental Services Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="card shadow mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="text-primary fw-bold m-0">Count of Dental Services</h6>
+                <h6>Select Year:</h6>
+                <form action="" method="get">
+                    <select name="year" onchange="this.form.submit()">
+                        <?php
+                        // Generate options for the select dropdown
+                        for ($i = date('Y'); $i >= 2020; $i--) {
+                            $selected = ($i == $selectedYear) ? 'selected' : '';
+                            echo "<option value='$i' $selected>$i</option>";
+                        }
+                        ?>
+                    </select>
+                </form>
+            </div>
+            <div class="card-body">
+                <canvas id="deptBarChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var months = <?php echo json_encode($months); ?>;
+        var oralProphylaxis = <?php echo json_encode($oralProphylaxis); ?>;
+        var restoration = <?php echo json_encode($restoration); ?>;
+        var consultation = <?php echo json_encode($consultation); ?>;
+    
+        var chart = document.getElementById('deptBarChart').getContext('2d');
+        var deptBarChart = new Chart(chart, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [
+                    {
+                        label: 'Oral Prophylaxis',
+                        data: oralProphylaxis,
+                        backgroundColor: 'rgba(255, 99, 132, 0.7)', // Adjusted transparency for better visibility
+                    },
+                    {
+                        label: 'Restoration',
+                        data: restoration,
+                        backgroundColor: 'rgba(255, 159, 64, 0.7)', // Adjusted transparency for better visibility
+                    },
+                    {
+                        label: 'Consultation',
+                        data: consultation,
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)', // Adjusted transparency for better visibility
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    x: {
+                        stacked: true, // Stacked bars along the x-axis
+                    },
+                    y: {
+                        stacked: true, // Stacked bars along the y-axis
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+    
+</body>
+</html>
+</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-xl-12">
+                            <div class="card shadow mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="text-primary fw-bold m-0">Calendar of Appointments</h6>
+                                    <div class="dropdown no-arrow"><button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button"><i class="fas fa-ellipsis-v text-gray-400"></i></button>
+                                        <div class="dropdown-menu shadow dropdown-menu-end animated--fade-in">
+                                            <p class="text-center dropdown-header">dropdown header:</p><a class="dropdown-item" href="#">&nbsp;Action</a><a class="dropdown-item" href="#">&nbsp;Another action</a>
+                                            <div class="dropdown-divider"></div><a class="dropdown-item" href="#">&nbsp;Something else here</a>
+                                        </div>
+                                    </div>
+                                </div><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Month Calendar</title>
+    <style>
+        .calendar-container {
+            padding: 20px 0;
+        }
+
+        .calendar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .calendar-header button {
+            background-color: #0074d9;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .calendar-header button:hover {
+            background-color: #0056b3;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            width: 100%;
+        }
+
+        .calendar-day {
+            text-align: center;
+            padding: 30px 15px;
+            font-size: 20px;
+            height: 100px;
+            width: 100px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .calendar-day.weekend {
+            background-color: #fafafa;
+        }
+
+        .selected-day {
+            background-color: #0074d9;
+            color: white;
+        }
+
+        .has-appointment {
+          background-color: #ff9800; /* Change this color to something distinct */
+          color: black; /* Ensure the text color is visible on the background */
+      }
+
+        .appointment-details {
+            display: none;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 800px) {
+            .calendar-day {
+                padding: 10px;
+                font-size: 14px;
+                height: 50px;
+                width: 50px;
+            }
+        }
+
+        @media (max-width: 300px) {
+            .calendar-day {
+                padding: 5px;
+                font-size: 10px;
+                height: 30px;
+                width: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calendar-container">
+        <div class="calendar">
+            <div class="calendar-header">
+                <button id="prevMonth" aria-label="Previous Month">
+                    &lt;
+                </button>
+                <h2 id="currentMonthYear"></h2>
+                <button id="nextMonth" aria-label="Next Month">
+                    &gt;
+                </button>
+            </div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+        </div>
+    </div>
+
+    <div class="appointment-details" id="appointmentDetails">
+        <!-- Container to display appointment details -->
+    </div>
+
+    <script>
+ // Get elements
+const prevMonthButton = document.getElementById('prevMonth');
+const nextMonthButton = document.getElementById('nextMonth');
+const currentMonthYear = document.getElementById('currentMonthYear');
+const calendarGrid = document.getElementById('calendarGrid');
+const appointmentDetails = document.getElementById('appointmentDetails');
+
+// Initialize date
+const currentDate = new Date();
+let selectedDate = currentDate;
+
+// Function to display appointment details
+function showAppointmentDetails(appointments) {
+    const appointmentDetails = document.getElementById('appointmentDetails');
+
+    if (appointments && appointments.length > 0) {
+        const detailsHTML = appointments.map(appointment => {
+            const full_name = appointment.full_name;
+            const course = appointment.course;
+            const formattedTime = appointment.formatted_time; // Assuming this property exists in the appointment object
+            const description = appointment.description;
+
+            return `
+                <div>
+                    <strong>Full Name: </strong>${full_name}
+                </div>
+                <div>
+                    <strong>Course: </strong>${course}
+                </div>
+                <div>
+                    <strong>Time: </strong>${formattedTime}
+                </div>
+                <div>
+                    <strong>Description: </strong>${description}
+                </div>
+                <hr>
+            `;
+        }).join('');
+
+        appointmentDetails.innerHTML = detailsHTML;
+        appointmentDetails.style.display = 'block';
+    } else {
+        appointmentDetails.style.display = 'none';
+    }
+}
+
+
+// Function to update the calendar
+function updateCalendar(appointments) {
+    const year = selectedDate.getFullYear();
+    const month = selectedDate.getMonth();
+    const firstDayOfMonth = new Date(year, month, 1);
+    const lastDayOfMonth = new Date(year, month + 1, 0);
+
+    // Update current month and year display
+    currentMonthYear.textContent = firstDayOfMonth.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+    // Clear previous calendar grid
+    calendarGrid.innerHTML = '';
+
+    // Create calendar days
+    for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
+        const date = new Date(year, month, day);
+        const dayElement = document.createElement('div');
+        dayElement.classList.add('calendar-day');
+
+        // Check if the current date has an appointment
+        const appointment = appointments.find(app => {
+            const appDate = new Date(app.date);
+            return (
+                appDate.getDate() === date.getDate() &&
+                appDate.getMonth() === date.getMonth() &&
+                appDate.getFullYear() === date.getFullYear()
+            );
+        });
+
+        if (date.toDateString() === selectedDate.toDateString()) {
+            dayElement.classList.add('selected-day');
+        }
+
+        if (appointment) {
+    dayElement.classList.add('has-appointment');
+    dayElement.textContent = day; // Show the day number even if there's an appointment
+    dayElement.style.backgroundColor = '#a5dde2'; // Set the background color to yellow for days with appointments
+} else {
+    dayElement.textContent = day;
+}
+
+        dayElement.addEventListener('click', () => {
+            showAppointmentDetails(appointments.filter(app => {
+                const appDate = new Date(app.date);
+                return (
+                    appDate.getDate() === date.getDate() &&
+                    appDate.getMonth() === date.getMonth() &&
+                    appDate.getFullYear() === date.getFullYear()
+                );
+            }));
+        });
+        calendarGrid.appendChild(dayElement);
+
+        // Add a weekend class for Saturday and Sunday
+        if (date.getDay() === 0 || date.getDay() === 6) {
+            dayElement.classList.add('weekend');
+        }
+    }
+}
+
+// Event listeners for navigating between months
+prevMonthButton.addEventListener('click', () => {
+    selectedDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, selectedDate.getDate());
+    fetchAppointmentsAndUpdateCalendar();
+});
+
+nextMonthButton.addEventListener('click', () => {
+    selectedDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, selectedDate.getDate());
+    fetchAppointmentsAndUpdateCalendar();
+});
+
+// Function to fetch appointments and update the calendar
+function fetchAppointmentsAndUpdateCalendar() {
+            fetch('adminget_appointments.php')
+                .then(response => response.json())
+                .then(appointments => {
+                    updateCalendar(appointments);
+                });
+        }
+
+// Initial calendar update
+fetchAppointmentsAndUpdateCalendar();
+    </script>
+</body>
+</html>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="bg-white sticky-footer">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright"><span>Copyright @ iDentify 2023</span></div>
+                </div>
+            </footer>
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="studentModal">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1>Total Students</h1><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div><?php
+include 'setup.php';
+
+// Fetch data from the database
+$sql = "SELECT CONCAT(first_name, ' ', last_name) AS name, course, email, student_id FROM users";
+$result = $conn->query($sql);
+?>
+
+<div class="modal-body">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Course</th>
+                <th>Email</th>
+                <th>Student ID</th>
+                <th>Profile</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            if ($result && $result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    echo '<tr>';
+                    echo '<td>' . $row['name'] . '</td>';
+                    echo '<td>' . $row['course'] . '</td>';
+                    echo '<td>' . $row['email'] . '</td>';
+                    echo '<td>' . $row['student_id'] . '</td>';
+
+                    // Add a link to the profile with a user icon
+                    echo '<td><a href="adminstudentprofile.php?student_id=' . $row['student_id'] . '"><i class="fas fa-user"></i></a></td>';
+
+                    echo '</tr>';
+                }
+            } else {
+                echo '<tr>';
+                echo '<td colspan="5">No students found.</td>';
+                echo '</tr>';
+            }
+            ?>
+        </tbody>
+    </table>
+</div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="pendingModal">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1>Pending Appointments</h1><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div><?php
+include 'setup.php';
+
+$currentDate = date('Y-m-d');
+
+// Fetch data from the database
+$sql = "SELECT id, student_id, first_name, last_name, course, DATE_FORMAT(date, '%Y-%m-%d') AS appointment_date, TIME_FORMAT(time, '%H:%i') AS appointment_time, description FROM appointment WHERE status IN ('Pending', 'Rescheduled') AND date >= '$currentDate'";
+$result = $conn->query($sql);
+
+// Check if the form was submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['approve_button'])) {
+        // Handle approval logic
+        $appointment_id = $_POST['appointment_id'];
+
+        // Update the status to "Approved"
+        $updateSql = "UPDATE appointment SET status = 'Approved' WHERE id = '$appointment_id'";
+        if ($conn->query($updateSql) === TRUE) {
+            // Successful update
+            echo '<script>alert("Appointment approved successfully.");</script>';
+            echo '<script>window.location.replace("admindash.php");</script>';
+        } else {
+            // Error updating
+            echo "Error updating record: " . $conn->error;
+        }
+    } elseif (isset($_POST['decline_button'])) {
+        // Handle decline logic
+        $appointment_id = $_POST['appointment_id'];
+
+        // Update the status to "Declined"
+        $updateSql = "UPDATE appointment SET status = 'Declined' WHERE id = '$appointment_id'";
+        if ($conn->query($updateSql) === TRUE) {
+            // Successful update
+            echo '<script>alert("Appointment declined successfully.");</script>';
+            echo '<script>window.location.replace("admindash.php");</script>';
+        } else {
+            // Error updating
+            echo "Error updating record: " . $conn->error;
+        }
+    }
+}
+
+$conn->close();
+?>
+
+<div class="modal-body">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Student ID</th>
+                <th>Course</th>
+                <th>Date and Time</th>
+                <th>Description</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            if ($result && $result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    echo '<tr>';
+                    echo '<td>' . $row['first_name'] . ' ' . $row['last_name'] . '</td>';
+                    echo '<td>' . $row['student_id'] . '</td>';
+                    echo '<td>' . $row['course'] . '</td>';
+                    echo '<td>';
+                    echo '<p>Date: ' . ($row['appointment_date'] ?? '') . '</p>';
+                    echo '<p>Time: ' . ($row['appointment_time'] ?? '') . '</p>';
+                    echo '</td>';
+                    echo '<td>' . $row['description'] . '</td>';
+                    echo '<td>';
+                    echo '<form method="POST">';
+                    echo '<input type="hidden" name="appointment_id" value="' . $row['id'] . '" />';
+                    echo '<button style="margin-right: 5px;" class="btn btn-primary" type="submit" name="approve_button"><i class="fas fa-check"></i></button>';
+                    echo '<button class="btn btn-danger" type="submit" name="decline_button"><i class="fas fa-times"></i></button>';
+                    echo '</form>';
+                    echo '</td>';
+                    echo '</tr>';
+                }
+            }
+            ?>
+        </tbody>
+    </table>
+</div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="approvedModal">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1>Approved Appointments</h1><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div><?php
+include 'setup.php';
+
+// Check if the "done_button" is pressed
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['done_button'])) {
+    $appointment_id = $_POST['appointment_id'];
+
+    // Update the status to 'Done'
+    $updateDoneSql = "UPDATE appointment SET status = 'Done' WHERE id = '$appointment_id'";
+    if ($conn->query($updateDoneSql) === TRUE) {
+        // Successful update
+        echo '<script>alert("Appointment marked as \'Done\' successfully.");</script>';
+        echo '<script>location.replace("admindash.php");</script>';
+    } else {
+        // Error updating
+        echo '<script>alert("Error updating appointment to \'Done\': ' . $conn->error . '");</script>';
+    }
+}
+
+// Fetch data from the database
+$sql = "SELECT id, CONCAT(first_name, ' ', last_name) AS name, course, CONCAT(DATE_FORMAT(date, '%Y-%m-%d'), ' ', TIME_FORMAT(time, '%h:%i %p')) AS datetime, description FROM appointment WHERE status = 'Approved'";
+$result = $conn->query($sql);
+
+if ($result && $result->num_rows > 0) {
+    echo '<div class="modal-body">';
+    echo '<table class="table">';
+    echo '<thead>';
+    echo '<tr>';
+    echo '<th>Name</th>';
+    echo '<th>Course</th>';
+    echo '<th>Date and Time</th>';
+    echo '<th>Description</th>';
+    echo '<th>Action</th>';
+    echo '</tr>';
+    echo '</thead>';
+    echo '<tbody>';
+    
+    while ($row = $result->fetch_assoc()) {
+        echo '<tr>';
+        echo '<td>' . $row['name'] . '</td>';
+        echo '<td>' . $row['course'] . '</td>';
+        echo '<td>' . $row['datetime'] . '</td>';
+        echo '<td>' . $row['description'] . '</td>';
+        echo '<td>';
+        echo '<form method="post">';
+        echo '<input type="hidden" name="appointment_id" value="' . $row['id'] . '" />';
+        echo '<button class="btn btn-primary icon-button" type="submit" name="done_button" style="background: #54b7c6; border-color: #54b7c6; width: 40px; height: 40px; text-align: center; margin-right: 20px;"><i class="fa fa-check"></i></button>';
+        echo '</form>';
+        echo '</td>';
+        echo '</tr>';
+    }
+
+    echo '</tbody>';
+    echo '</table>';
+    echo '</div>';
+} else {
+    echo '<div class="modal-body">';
+    echo '<table class="table">';
+    echo '<tr>';
+    echo '<td colspan="5">No appointments found.</td>';
+    echo '</tr>';
+    echo '</table>';
+    echo '</div>';
+}
+
+$conn->close();
+?>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="rescheduledModal">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1>Expired Appointments</h1><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div><?php
+include 'setup.php';
+
+// Fetch data from the database
+$sql = "SELECT CONCAT(first_name, ' ', last_name) AS name, 
+                course, 
+                student_id,
+                CONCAT(DATE_FORMAT(date, '%Y-%m-%d'), ' ', TIME_FORMAT(time, '%H:%i')) AS datetime, 
+                description,
+                id, date, time
+        FROM appointment 
+        WHERE (status IN ('Pending', 'Rescheduled') AND date <= '$currentDate') 
+              OR status = 'Declined'";
+
+$result = $conn->query($sql);
+
+// Check if the form was submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['reschedule_button'])) {
+        // Handle reschedule logic
+        $appointment_id = $_POST['appointment_id'];
+        $newDate = $_POST['appointment_date_' . $appointment_id];
+        $newTime = $_POST['appointment_time_' . $appointment_id];
+
+        // Check if the new date and time are not empty
+        if (!empty($newDate) && !empty($newTime)) {
+            $updateSql = "UPDATE appointment SET status = 'Rescheduled', date = '$newDate', time = '$newTime' WHERE id = '$appointment_id' AND (status = 'Pending' OR status = 'Rescheduled' OR status = 'Declined')";
+            if ($conn->query($updateSql) === TRUE) {
+                // Successful update
+                echo '<script>alert("Appointment rescheduled successfully.");</script>';
+                echo '<script>window.location.replace("admindash.php");</script>';
+            } else {
+                // Error updating
+                echo '<script>alert("Error updating record: ' . $conn->error . '");</script>';
+            }
+        } else {
+            // Handle the case where date or time is empty
+            echo '<script>alert("Please provide both date and time.");</script>';
+        }
+    }
+}
+?>
+<div class="modal-body">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Course</th>
+                <th>Student ID</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Description</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            if ($result && $result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    echo '<tr>';
+                    echo '<td>' . $row['name'] . '</td>';
+                    echo '<td>' . $row['course'] . '</td>';
+                    echo '<td>' . $row['student_id'] . '</td>';
+                    echo '<td>';
+                    echo '<form method="POST">';
+                    echo '<input type="date" name="appointment_date_' . $row['id'] . '" value="' . htmlspecialchars($row['date']) . '" class="form-control" />';
+                    echo '</td>';
+                    echo '<td>';
+                    echo '<input type="time" name="appointment_time_' . $row['id'] . '" value="' . date('H:i', strtotime($row['time'])) . '" class="form-control" />';
+                    echo '</td>';
+                    echo '<td>' . htmlspecialchars($row['description']) . '</td>';
+                    // Action button
+                    echo '<td>';
+                    echo '<input type="hidden" name="appointment_id" value="' . $row['id'] . '">';
+                    echo '<button class="btn btn-primary" type="submit" name="reschedule_button"><i class="fas fa-calendar-alt"></i></button>';
+                    echo '</form>';
+                    echo '</td>';
+                    echo '</tr>';
+                }
+            } else {
+                echo '<tr>';
+                echo '<td colspan="7">No appointments found.</td>';
+                echo '</tr>';
+            }
+            ?>
+        </tbody>                       
+    </table>
+</div>
+
+            </div>
+        </div>
+    </div>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/bs-init.js"></script>
+    <script src="assets/js/theme.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,2135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Table - Brand</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Aclonica&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Adamina&amp;display=swap">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="assets/css/Bootstrap-4-Calendar-No-Custom-Code.css">
+    <link rel="stylesheet" href="assets/css/Icon-Button.css">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0" style="background: url(&quot;assets/img/blu3.jpg&quot;);">
+            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+                    <div class="sidebar-brand-icon rotate-n-15"><img src="assets/img/364960463_1215282112492812_4229741986524435405_n.png" style="width: 100%;height: 50px;"></div>
+                    <div class="sidebar-brand-text mx-3"><span>iDentify<br></span></div>
+                </a>
+                <hr class="sidebar-divider my-0">
+                <ul class="navbar-nav text-light" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link" href="admindash.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="adminstudents.php"><i class="fas fa-user-friends"></i><span>Students</span></a></li>
+                    <li class="nav-item dropdown"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><i class="fas fa-file-medical-alt"></i>Profiling</a>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="adminassessment.php">Oral Assessment</a><a class="dropdown-item" href="adminmonitoring.php">Food Monitoring</a></div>
+                    </li>
+                </ul>
+                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content">
+                <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
+                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                        <ul class="navbar-nav flex-nowrap ms-auto">
+                            <li class="nav-item dropdown d-sm-none no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><i class="fas fa-search"></i></a>
+                                <div class="dropdown-menu dropdown-menu-end p-3 animated--grow-in" aria-labelledby="searchDropdown">
+                                    <form class="me-auto navbar-search w-100">
+                                        <div class="input-group"><input class="bg-light form-control border-0 small" type="text" placeholder="Search for ...">
+                                            <div class="input-group-append"><button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown no-arrow mx-1"><div class="nav-item dropdown no-arrow">
+    <a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#">
+        <div>
+            <?php
+            include 'setup.php';
+
+            // Initialize a variable to store pending appointment notifications
+            $pendingAppointmentsHtml = '';
+
+            // Select pending appointments with details
+            $sql = "SELECT first_name, last_name, description, date FROM appointment WHERE status = 'Pending'";
+            $result = $conn->query($sql);
+
+            // Count the number of unseen notifications
+            $unseenCount = 0;
+
+            if ($result && $result->num_rows > 0) {
+                // Loop through pending appointments
+                while ($row = $result->fetch_assoc()) {
+                    $firstName = $row['first_name'];
+                    $lastName = $row['last_name'];
+                    $description = $row['description'];
+                    $date = $row['date'];
+
+                    // Concatenate notification message to the variable
+                    $pendingAppointmentsHtml .= '
+                    <a class="dropdown-item d-flex align-items-center" href="admindash.php?modal=pendingModal" style="text-decoration: none; color: inherit;">
+                        <div class="me-3">
+                            <div class="bg-primary icon-circle"><i class="fas fa-calendar-alt text-white"></i></div>
+                        </div>
+                        <div>
+                            <span class="small text-gray-500">' . $firstName . ' ' . $lastName . '</span>
+                            <p>' . $description . ' ' . $date . ' </p>
+                        </div>
+                    </a>
+                    ';
+                    
+                    $unseenCount++;
+                }
+
+                $result->free(); // Free the result set
+            }
+
+            // Output notification icon with badge
+            echo '<i class="fas fa-bell fa-fw"></i>';
+            echo '<span class="badge bg-danger badge-counter">' . $unseenCount . '</span>';
+            ?>
+        </div>
+    </a>
+    <div class="dropdown-menu dropdown-menu-end dropdown-list animated--grow-in" style="max-height: 200px; overflow-y: auto;">
+        <h6 class="dropdown-header">Notifications</h6>
+        <!-- Output the concatenated notification messages -->
+        <?php echo $pendingAppointmentsHtml; ?>
+    </div>
+</div>
+
+</li>
+                            <li class="nav-item dropdown no-arrow">
+                                <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><?php
+include 'setup.php';
+
+// Assuming you have a user_id stored in the session (replace this with your actual session variable)
+$admin_id = $_SESSION['admin_id'];
+
+
+// Fetch the first_name and last_name from the user table
+$query = "SELECT first_name, last_name FROM admin WHERE id = '$admin_id'";
+$result = mysqli_query($conn, $query);
+
+if (mysqli_num_rows($result) == 1) {
+    $row = mysqli_fetch_assoc($result);
+    $first_name = $row['first_name'];
+    $last_name = $row['last_name'];
+    
+    // Output the data within the HTML span element
+    echo '<span class="d-none d-lg-inline me-2 text-gray-600 small">' . $first_name . ' ' . $last_name . '</span>';
+} else {
+    echo '<span class="d-none d-lg-inline me-2 text-gray-600 small">User not found</span>';
+}
+?>
+</a>
+                                    <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in"><a class="dropdown-item" href="admineditprofile.php"><i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Profile</a>
+                                        <div class="dropdown-divider"></div><a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Logout</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="container-fluid">
+                    <div>
+                        <h3 class="text-dark mb-4" style="font-family: 'Abril Fatface', serif;"><strong>Student Profile</strong></h3>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-lg-8 col-xl-12">
+                            <div class="row mb-3 d-none">
+                                <div class="col">
+                                    <div class="card textwhite bg-primary text-white shadow">
+                                        <div class="card-body">
+                                            <div class="row mb-2">
+                                                <div class="col">
+                                                    <p class="m-0">Peformance</p>
+                                                    <p class="m-0"><strong>65.2%</strong></p>
+                                                </div>
+                                                <div class="col-auto"><i class="fas fa-rocket fa-2x"></i></div>
+                                            </div>
+                                            <p class="text-white-50 small m-0"><i class="fas fa-arrow-up"></i>&nbsp;5% since last month</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card textwhite bg-success text-white shadow">
+                                        <div class="card-body">
+                                            <div class="row mb-2">
+                                                <div class="col">
+                                                    <p class="m-0">Peformance</p>
+                                                    <p class="m-0"><strong>65.2%</strong></p>
+                                                </div>
+                                                <div class="col-auto"><i class="fas fa-rocket fa-2x"></i></div>
+                                            </div>
+                                            <p class="text-white-50 small m-0"><i class="fas fa-arrow-up"></i>&nbsp;5% since last month</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="card shadow mb-3">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="mb-3"><label class="form-label" for="username"><strong>Student ID</strong></label>
+                                                        <p id="student_id">Paragraph</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="mb-3"><label class="form-label" for="email"><strong>First Name</strong></label>
+                                                        <p id="fname">Paragraph</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="mb-3"><label class="form-label" for="first_name"><strong>Last Name</strong></label>
+                                                        <p id="lname">Paragraph</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="mb-3"><label class="form-label" for="last_name"><strong>Birthdate</strong></label>
+                                                        <p id="birthday">Paragraph</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="mb-3"><label class="form-label" for="first_name"><strong>Barangay</strong></label>
+                                                        <p id="brgy">Paragraph</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="mb-3"><label class="form-label" for="last_name"><strong>Municipality</strong></label>
+                                                        <p id="municipality">Paragraph</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="mb-3"><label class="form-label" for="first_name"><strong>Province</strong></label>
+                                                        <p id="province">Paragraph</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="mb-3"><label class="form-label" for="last_name"><strong>Email Address</strong></label>
+                                                        <p id="email">Paragraph</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="mb-3"><label class="form-label" for="first_name"><strong>Phone Number</strong></label>
+                                                        <p id="number">Paragraph</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="mb-3"><label class="form-label" for="last_name"><strong>Allergy</strong></label>
+                                                        <p id="allergy">Paragraph</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="mb-3"><label class="form-label" for="first_name"><strong>Course</strong></label>
+                                                        <p id="course">Paragraph</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="mb-3"><label class="form-label" for="first_name"><strong>Gender</strong></label>
+                                                        <p id="gender">Paragraph</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="card">
+                                        <div class="card-body food-monitoring">
+                                            <div style="text-align: center;padding: 10px;">
+                                                <h1>Food Monitoring</h1>
+                                            </div><?php
+include 'setup.php';
+
+// Check if student_id is set in the URL
+$id = isset($_GET['student_id']) ? $_GET['student_id'] : '';
+
+// Select data from the food_monitoring table based on student_id
+$sql = "SELECT 
+            student_id, 
+            date,
+            fruit_no_sugar,
+            fruit_with_sugar,
+            fruit_juice,
+            vegjuice_no_sugar,
+            vegjuice_with_sugar,
+            fresh_veg,
+            fresh_vegsugar,
+            rice_grain,
+            cracker_grain,
+            pastry_grain,
+            dairy_no_sugar,
+            dairy_cheese,
+            dairy_with_sugar,
+            protein_no_sugar,
+            protein_with_sugar,
+            oils_no_sugar,
+            calorie_with_sugar,
+            added_sugar,
+            sugary_drinks,
+            glass_of_water,
+            result
+        FROM food_monitoring
+        WHERE student_id = '$id'";
+$result = mysqli_query($conn, $sql);
+
+// Check if the query executed successfully
+if ($result === false) {
+    die("Error executing query: " . mysqli_error($conn));
+}
+?>
+    <div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th style="font-size: 14px;">Date</th>
+                        <th style="font-size: 14px;">Fruit no Sugar</th>
+                        <th style="font-size: 14px;">Fruit with Sugar</th>
+                        <th style="font-size: 14px;">Fruit Juice</th>
+                        <th style="font-size: 14px;">Vegetable Juice no Sugar</th>
+                        <th style="font-size: 14px;">Vegetable Juice with Sugar</th>
+                        <th style="font-size: 14px;">Rice Grain</th>
+                        <th style="font-size: 14px;">Cracker Grain</th>
+                        <th style="font-size: 14px;">Pastry Grain</th>
+                        <th style="font-size: 14px;">Dairy no Sugar</th>
+                        <th style="font-size: 14px;">Dairy Cheese</th>
+                        <th style="font-size: 14px;">Dairy with Sugar</th>
+                        <th style="font-size: 14px;">Protein with Sugar</th>
+                        <th style="font-size: 14px;">Oils no Sugar</th>
+                        <th style="font-size: 14px;">Calorie with Sugar</th>
+                        <th style="font-size: 14px;">Sugary Drinks</th>
+                        <th style="font-size: 14px;">Glass of Water</th>
+                        <th style="font-size: 14px;">Results</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while ($row = mysqli_fetch_assoc($result)) : ?>
+                    <tr>
+                        <td style="font-size: 14px;"><?php echo $row['date']; ?></td>
+                        <td style="font-size: 14px;"><?php echo $row['fruit_no_sugar']; ?></td>
+                        <td style="font-size: 14px;"><?php echo $row['fruit_with_sugar']; ?></td>
+                        <td style="font-size: 14px;"><?php echo $row['fruit_juice']; ?></td>
+                        <td style="font-size: 14px;"><?php echo $row['vegjuice_no_sugar']; ?></td>
+                        <td style="font-size: 14px;"><?php echo $row['vegjuice_with_sugar']; ?></td>
+                        <td style="font-size: 14px;"><?php echo $row['fresh_veg']; ?></td>
+                        <td style="font-size: 14px;"><?php echo $row['fresh_vegsugar']; ?></td>
+                        <td style="font-size: 14px;"><?php echo $row['rice_grain']; ?></td>
+                        <td style="font-size: 14px;"><?php echo $row['cracker_grain']; ?></td>
+                        <td style="font-size: 14px;"><?php echo $row['pastry_grain']; ?></td>
+                        <td style="font-size: 14px;"><?php echo $row['dairy_no_sugar']; ?></td>
+                        <td style="font-size: 14px;"><?php echo $row['dairy_cheese']; ?></td>
+                        <td style="font-size: 14px;"><?php echo $row['dairy_with_sugar']; ?></td>
+                        <td style="font-size: 14px;"><?php echo $row['protein_no_sugar']; ?></td>
+                        <td style="font-size: 14px;"><?php echo $row['protein_with_sugar']; ?></td>
+                        <td style="font-size: 14px;"><?php echo $row['oils_no_sugar']; ?></td>
+                        <td style="font-size: 14px;"><?php echo $row['calorie_with_sugar']; ?></td>
+                        <td style="font-size: 14px;"><?php echo $row['sugary_drinks']; ?></td>
+                        <td style="font-size: 14px;"><?php echo $row['glass_of_water']; ?></td>
+                        <td style="font-size: 14px;"><?php echo $row['result']; ?></td>
+                    </tr>                    
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top: 20px;">
+                                <div class="col">
+                                    <div class="card">
+                                        <div class="card-body" id="oral-assessment">
+                                            <div style="text-align: center;">
+                                                <div class="row">
+                                                    <div class="col-lg-12 col-xl-12 col-xxl-12">
+                                                        <h1 style="margin: 0px;">Oral Health Assessment</h1>
+                                                    </div>
+                                                    <div class="col-lg-12 col-xl-12 col-xxl-12" style="text-align: right;"><a class="btn btn-primary" role="button" data-bs-target="#modalOral" data-bs-toggle="modal" style="font-size: 15px;">Take Assessment</a></div>
+                                                </div>
+                                            </div><?php
+include 'setup.php';
+
+// Check if student_id is set in the URL
+$id = isset($_GET['student_id']) ? $_GET['student_id'] : '';
+
+// Select data from the dental_assessment table based on student_id
+$sql = "SELECT date, lips, dental_pain, natural_teeth, dentures, oral_cleanliness, saliva, tongue, gum_and_tissues, oral_hygiene, results
+        FROM dental_assessment
+        WHERE student_id = '$id'";
+$result = mysqli_query($conn, $sql);
+
+// Check if the query executed successfully
+if ($result === false) {
+    die("Error executing query: " . mysqli_error($conn));
+}
+?>
+
+<div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th style="font-size: 14px;">Date</th>
+                    <th style="font-size: 14px;">Lips</th>
+                    <th style="font-size: 14px;">Dental Pain</th>
+                    <th style="font-size: 14px;">Natural Teeth</th>
+                    <th style="font-size: 14px;">Dentures</th>
+                    <th style="font-size: 14px;">Oral Cleanliness</th>
+                    <th style="font-size: 14px;">Saliva</th>
+                    <th style="font-size: 14px;">Tongue</th>
+                    <th style="font-size: 14px;">Gum and Tissues</th>
+                    <th style="font-size: 14px;">Oral Hygiene</th>
+                    <th style="font-size: 14px;">Results</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                // Loop through each row in the result set
+                while ($row = mysqli_fetch_assoc($result)) {
+                    echo "<tr>";
+                    echo "<td style='font-size: 14px;'>" . $row['date'] . "</td>";
+                    echo "<td style='font-size: 14px;'>" . $row['lips'] . "</td>";
+                    echo "<td style='font-size: 14px;'>" . $row['dental_pain'] . "</td>";
+                    echo "<td style='font-size: 14px;'>" . $row['natural_teeth'] . "</td>";
+                    echo "<td style='font-size: 14px;'>" . $row['dentures'] . "</td>";
+                    echo "<td style='font-size: 14px;'>" . $row['oral_cleanliness'] . "</td>";
+                    echo "<td style='font-size: 14px;'>" . $row['saliva'] . "</td>";
+                    echo "<td style='font-size: 14px;'>" . $row['tongue'] . "</td>";
+                    echo "<td style='font-size: 14px;'>" . $row['gum_and_tissues'] . "</td>";
+                    echo "<td style='font-size: 14px;'>" . $row['oral_hygiene'] . "</td>";
+                    echo "<td style='font-size: 14px; max-width: 200px; overflow: hidden; text-overflow: ellipsis;' title='" . $row['results'] . "'>" . $row['results'] . "</td>";
+                    echo "</tr>";
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <form method="post" action="adminstudentprofile.php" enctype="application/x-www-form-urlencoded">
+                        <div class="card shadow mb-3"><input class="form-control" type="hidden" id="student_id_input" name="student_id_input"><input class="form-control" type="hidden" id="fname_input" name="fname_input"><input class="form-control" type="hidden" id="lname_input" name="lname_input"><input class="form-control" type="hidden" id="course_input" name="course_input">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-12 col-xl-12 col-xxl-12">
+                                        <h1 class="text-center" style="margin: 0px;">Medical Health History</h1>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="mb-3"><label class="form-label" for="username"><strong>Are you under current medical treatment?</strong></label><select class="form-select" id="medical_treatment" name="medical_treatment" disabled="" readonly="">
+                                                <option value="Yes">Yes</option>
+                                                <option value="No" selected="">No</option>
+                                            </select></div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="mb-3"><label class="form-label" for="email"><strong>Have you had any major operation?</strong><br></label><select class="form-select" id="major_operation" name="major_operation" disabled="" readonly="">
+                                                <option value="Yes">Yes</option>
+                                                <option value="No" selected="">No</option>
+                                            </select></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="mb-3"><label class="form-label" for="username"><strong>Has a physician informed you that you have or had:</strong></label>
+                                            <div>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div>
+                                                            <p class="text-center">Heart Ailment</p><select class="form-select" id="heart_ailment" name="heart_ailment" disabled="" readonly="">
+                                                                <option value="Yes">Yes</option>
+                                                                <option value="No" selected="">No</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div>
+                                                            <p class="text-center">High Blood Pressure</p><select class="form-select" id="highblood" name="highblood" disabled="" readonly="">
+                                                                <option value="Yes">Yes</option>
+                                                                <option value="No" selected="">No</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div>
+                                                            <p class="text-center">Diabetes</p><select class="form-select" id="diabetes" name="diabetes" disabled="" readonly="">
+                                                                <option value="Yes">Yes</option>
+                                                                <option value="No" selected="">No</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div>
+                                                            <p class="text-center">Rheumatic Fever</p><select class="form-select" id="rheumatic_fever" name="rheumatic_fever" disabled="" readonly="">
+                                                                <option value="Yes">Yes</option>
+                                                                <option value="No" selected="">No</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div>
+                                                            <p class="text-center">Lung Disease</p><select class="form-select" id="lung_disease" name="lung_disease" disabled="" readonly="">
+                                                                <option value="Yes">Yes</option>
+                                                                <option value="No" selected="">No</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div>
+                                                            <p class="text-center">Any Liver Disease</p><select class="form-select" id="liver_disease" name="liver_disease" disabled="" readonly="">
+                                                                <option value="Yes">Yes</option>
+                                                                <option value="No" selected="">No</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="mb-3"><label class="form-label" for="first_name"><strong>Do you have night sweats, cough and weight loss?</strong></label><select class="form-select" id="weight_loss" name="weight_loss" disabled="" readonly="">
+                                                <option value="Yes">Yes</option>
+                                                <option value="No" selected="">No</option>
+                                            </select></div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="mb-3"><label class="form-label" for="first_name"><strong>Are you allergic to any food or medicine?</strong></label><select class="form-select" id="medicine" name="medicine" disabled="" readonly="">
+                                                <option value="Yes">Yes</option>
+                                                <option value="No" selected="">No</option>
+                                            </select></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="mb-3"><label class="form-label" for="first_name"><strong>Are you taking any drugs or medication?</strong></label><select class="form-select" id="medication" name="medication" disabled="" readonly="">
+                                                <option value="Yes">Yes</option>
+                                                <option value="No" selected="">No</option>
+                                            </select></div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="mb-3"><label class="form-label" for="first_name"><strong>Are you on any kind of special diet?</strong></label><select class="form-select" id="special_diet" name="special_diet" disabled="" readonly="">
+                                                <option value="Yes">Yes</option>
+                                                <option value="No" selected="">No</option>
+                                            </select></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="mb-3"><label class="form-label" for="first_name"><strong>Do you experience shortness of breath when climbing stairs?</strong></label><select class="form-select" id="climb_stairs" name="climb_stairs" disabled="" readonly="">
+                                                <option value="Yes">Yes</option>
+                                                <option value="No" selected="">No</option>
+                                            </select></div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="mb-3"><label class="form-label" for="first_name"><strong>Have you experienced any complication with healing?</strong></label><select class="form-select" id="healing" name="healing" disabled="" readonly="">
+                                                <option value="Yes">Yes</option>
+                                                <option value="No" selected="">No</option>
+                                            </select></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="mb-3"><label class="form-label" for="first_name"><strong>Are you in good general health at this time?</strong></label><select class="form-select" id="general_health" name="general_health" disabled="" readonly="">
+                                                <option value="Yes">Yes</option>
+                                                <option value="No" selected="">No</option>
+                                            </select></div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="mb-3"><label class="form-label" for="first_name"><strong>Are you pregnant? If so, how many months?</strong></label><select class="form-select" id="pregnant" name="pregnant" disabled="" readonly="">
+                                                <option value="Yes">Yes</option>
+                                                <option value="No" selected="">No</option>
+                                            </select></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="mb-3"><label class="form-label" for="first_name"><strong>Have you experienced profuse bleeding after tooth extraction?</strong></label><select class="form-select" id="tooth_extraction" name="tooth_extraction" disabled="" readonly="">
+                                                <option value="Yes">Yes</option>
+                                                <option value="No" selected="">No</option>
+                                            </select></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <section>
+                            <div style="padding: 10px;">
+                                <h1 style="text-align: center;font-family: 'Abril Fatface', serif;color: var(--bs-gray-800);padding: 5px;font-size: 30px;"><strong>Mouth Examination</strong></h1>
+                                <div class="row">
+                                    <div class="col-lg-12 col-xl-12 col-xxl-12" style="text-align: right;height: 50.5px;"><a class="btn btn-primary" role="button" data-bs-target="#modalHistory" data-bs-toggle="modal" style="font-size: 15px;">View Dental History</a></div>
+                                </div>
+                            </div>
+                            <div class="row text-center d-flex justify-content-center justify-content-xl-center align-items-xl-center justify-content-xxl-center" style="margin-bottom: 10px;">
+                                <div class="col-6 col-sm-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>18</p><i class="fas fa-tooth"></i><select class="form-select" id="18" style="width: 100%;" name="18">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-xl-1 col-xxl-1 text-center" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>17</p><i class="fas fa-tooth"></i><select class="form-select" id="17" style="width: 100%;" name="17">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>16</p><i class="fas fa-tooth"></i><select class="form-select" id="16" style="width: 100%;" name="16">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>15</p><i class="fas fa-tooth"></i><select class="form-select" id="15" style="width: 100%;" name="15">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>14</p><i class="fas fa-tooth"></i><select class="form-select" id="14" style="width: 100%;" name="14">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>13</p><i class="fas fa-tooth"></i><select class="form-select" id="13" style="width: 100%;" name="13">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>12</p><i class="fas fa-tooth"></i><select class="form-select" id="12" style="width: 100%;" name="12">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>11</p><i class="fas fa-tooth"></i><select class="form-select" id="11" style="width: 100%;" name="11">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="w-100"></div>
+                                <div class="w-100"></div>
+                            </div>
+                            <div class="row text-center d-flex justify-content-xl-center justify-content-xxl-center" style="margin-bottom: 30px;">
+                                <div class="col-6 col-sm-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>21</p><i class="fas fa-tooth"></i><select class="form-select" id="21" style="width: 100%;" name="21">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>22</p><i class="fas fa-tooth"></i><select class="form-select" id="22" style="width: 100%;" name="22">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>23</p><i class="fas fa-tooth"></i><select class="form-select" id="23" style="width: 100%;" name="23">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>24</p><i class="fas fa-tooth"></i><select class="form-select" id="24" style="width: 100%;" name="24">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>25</p><i class="fas fa-tooth"></i><select class="form-select" id="25" style="width: 100%;" name="25">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>26</p><i class="fas fa-tooth"></i><select class="form-select" id="26" style="width: 100%;" name="26">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>27</p><i class="fas fa-tooth"></i><select class="form-select" id="27" style="width: 100%;" name="27">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>28</p><i class="fas fa-tooth"></i><select class="form-select" id="28" style="width: 100%;" name="28">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row text-center d-flex justify-content-sm-center justify-content-md-center justify-content-xxl-center" style="margin-bottom: 50px;">
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>55</p><i class="fas fa-tooth"></i><select class="form-select" id="55" style="width: 100%;" name="55">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>54</p><i class="fas fa-tooth"></i><select class="form-select" id="54" style="width: 100%;" name="54">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>53</p><i class="fas fa-tooth"></i><select class="form-select" id="53" style="width: 100%;" name="53">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>52</p><i class="fas fa-tooth"></i><select class="form-select" id="52" style="width: 100%;" name="52">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>51</p><i class="fas fa-tooth"></i><select class="form-select" id="51" style="width: 100%;" name="51">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>61</p><i class="fas fa-tooth"></i><select class="form-select" id="61" style="width: 100%;" name="61">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>62</p><i class="fas fa-tooth"></i><select class="form-select" id="62" style="width: 100%;" name="62">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>63</p><i class="fas fa-tooth"></i><select class="form-select" id="63" style="width: 100%;" name="63">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>64</p><i class="fas fa-tooth"></i><select class="form-select" id="64" style="width: 100%;" name="64">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>65</p><i class="fas fa-tooth"></i><select class="form-select" id="65" style="width: 100%;" name="65">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row text-center d-sm-flex d-md-flex justify-content-sm-center justify-content-md-center" style="margin-bottom: 30px;">
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1 offset-md-0 offset-xxl-0 d-md-flex justify-content-md-center" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>85</p><i class="fas fa-tooth"></i><select class="form-select" id="85" style="width: 100%;" name="85">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1 d-md-flex justify-content-md-center" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>84</p><i class="fas fa-tooth"></i><select class="form-select" id="84" style="width: 100%;" name="84">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1 offset-md-0" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>83</p><i class="fas fa-tooth"></i><select class="form-select" id="83" style="width: 100%;" name="83">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>82</p><i class="fas fa-tooth"></i><select class="form-select" id="82" style="width: 100%;" name="82">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>81</p><i class="fas fa-tooth"></i><select class="form-select" id="81" style="width: 100%;" name="81">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>71</p><i class="fas fa-tooth"></i><select class="form-select" id="71" style="width: 100%;" name="71">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1 offset-md-0" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>72</p><i class="fas fa-tooth"></i><select class="form-select" id="72" style="width: 100%;" name="72">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>73</p><i class="fas fa-tooth"></i><select class="form-select" id="73" style="width: 100%;" name="73">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>74</p><i class="fas fa-tooth"></i><select class="form-select" id="74" style="width: 100%;" name="74">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>75</p><i class="fas fa-tooth"></i><select class="form-select" id="75" style="width: 100%;" name="75">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row text-center d-flex justify-content-xl-center justify-content-xxl-center" style="margin-bottom: 10px;">
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>48</p><i class="fas fa-tooth"></i><select class="form-select" id="48" style="width: 100%;" name="48">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>47</p><i class="fas fa-tooth"></i><select class="form-select" id="47" style="width: 100%;" name="47">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>46</p><i class="fas fa-tooth"></i><select class="form-select" id="46" style="width: 100%;" name="46">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>45</p><i class="fas fa-tooth"></i><select class="form-select" id="45" style="width: 100%;" name="45">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>44</p><i class="fas fa-tooth"></i><select class="form-select" id="44" style="width: 100%;" name="44">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>43</p><i class="fas fa-tooth"></i><select class="form-select" id="43" style="width: 100%;" name="43">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>42</p><i class="fas fa-tooth"></i><select class="form-select" id="42" style="width: 100%;" name="42">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>41</p><i class="fas fa-tooth"></i><select class="form-select" id="41" style="width: 100%;" name="41">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row text-center d-flex justify-content-xl-center justify-content-xxl-center">
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>31</p><i class="fas fa-tooth"></i><select class="form-select" id="31" style="width: 100%;" name="31">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>32</p><i class="fas fa-tooth"></i><select class="form-select" id="32" style="width: 100%;" name="32">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>33</p><i class="fas fa-tooth"></i><select class="form-select" id="33" style="width: 100%;" name="33">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>34</p><i class="fas fa-tooth"></i><select class="form-select" id="34" style="width: 100%;" name="34">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>35</p><i class="fas fa-tooth"></i><select class="form-select" id="35" style="width: 100%;" name="35">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>36</p><i class="fas fa-tooth"></i><select class="form-select" id="36" style="width: 100%;" name="36">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>37</p><i class="fas fa-tooth"></i><select class="form-select" id="37" style="width: 100%;" name="37">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3 col-md-3 col-xl-1 col-xxl-1" style="border: 1px solid #546856 ;">
+                                    <div>
+                                        <p>38</p><i class="fas fa-tooth"></i><select class="form-select" id="38" style="width: 100%;" name="38">
+                                            <optgroup label="Mouth Examination">
+                                                <option value="sound" selected="">✓</option>
+                                                <option value="for extraction">x</option>
+                                                <option value="caries">C</option>
+                                                <option value="amalgam filling">Am</option>
+                                                <option value="temporary filling">TF</option>
+                                                <option value="Jacket crown">JC</option>
+                                                <option value="missing">M</option>
+                                                <option value="root fragment">RF</option>
+                                                <option value="poetic">P</option>
+                                                <option value="extracted">EXO</option>
+                                                <option value="light cure filling">LC</option>
+                                                <option value="unerupted">Un</option>
+                                                <option value="impacted">IM</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <h1 style="margin-top: 30px;text-align: center;">Legend</h1>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top: 20px;">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="card">
+                                                <div class="card-body d-inline-flex">
+                                                    <h6 class="text-muted card-subtitle mb-2" style="font-size: 20px;"><strong>✓ </strong>-&nbsp;</h6>
+                                                    <h6 class="text-muted card-subtitle mb-2" style="margin-right: 7px;font-size: 20px;">Sound</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="card">
+                                                <div class="card-body d-inline-flex">
+                                                    <h6 class="text-muted card-subtitle mb-2" style="font-size: 20px;"><strong>M </strong>-&nbsp;</h6>
+                                                    <h6 class="text-muted card-subtitle mb-2" style="margin-right: 7px;font-size: 20px;">Missing</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="card">
+                                                <div class="card-body d-inline-flex">
+                                                    <h6 class="text-muted card-subtitle mb-2" style="font-size: 20px;"><strong>x </strong>-&nbsp;</h6>
+                                                    <h6 class="text-muted card-subtitle mb-2" style="margin-right: 7px;font-size: 20px;">For Extraction</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="card">
+                                                <div class="card-body d-inline-flex">
+                                                    <h6 class="text-muted card-subtitle mb-2" style="font-size: 20px;"><strong>RF </strong>-&nbsp;</h6>
+                                                    <h6 class="text-muted card-subtitle mb-2" style="margin-right: 7px;font-size: 20px;">Root Fragment</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="card">
+                                                <div class="card-body d-inline-flex">
+                                                    <h6 class="text-muted card-subtitle mb-2" style="font-size: 20px;"><strong>C</strong> -&nbsp;</h6>
+                                                    <h6 class="text-muted card-subtitle mb-2" style="margin-right: 7px;font-size: 20px;">Caries</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="card">
+                                                <div class="card-body d-inline-flex">
+                                                    <h6 class="text-muted card-subtitle mb-2" style="font-size: 20px;"><strong>P</strong> -&nbsp;</h6>
+                                                    <h6 class="text-muted card-subtitle mb-2" style="margin-right: 7px;font-size: 20px;">Pontic</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="card">
+                                                <div class="card-body d-inline-flex">
+                                                    <h6 class="text-muted card-subtitle mb-2" style="font-size: 20px;"><strong>Am </strong>-&nbsp;</h6>
+                                                    <h6 class="text-muted card-subtitle mb-2" style="margin-right: 7px;font-size: 20px;">Amalgam Filling</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="card">
+                                                <div class="card-body d-inline-flex">
+                                                    <h6 class="text-muted card-subtitle mb-2" style="font-size: 20px;"><strong>EXO </strong>-&nbsp;</h6>
+                                                    <h6 class="text-muted card-subtitle mb-2" style="margin-right: 7px;font-size: 20px;">Extracted</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="card">
+                                                <div class="card-body d-inline-flex">
+                                                    <h6 class="text-muted card-subtitle mb-2" style="font-size: 20px;"><strong>TF </strong>-&nbsp;</h6>
+                                                    <h6 class="text-muted card-subtitle mb-2" style="margin-right: 7px;font-size: 20px;">Temporary Filling</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="card">
+                                                <div class="card-body d-inline-flex">
+                                                    <h6 class="text-muted card-subtitle mb-2" style="font-size: 20px;"><strong>LC </strong>-&nbsp;</h6>
+                                                    <h6 class="text-muted card-subtitle mb-2" style="margin-right: 7px;font-size: 20px;">Light Cure Filling</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="card">
+                                                <div class="card-body d-inline-flex">
+                                                    <h6 class="text-muted card-subtitle mb-2" style="font-size: 20px;"><strong>JC </strong>-&nbsp;</h6>
+                                                    <h6 class="text-muted card-subtitle mb-2" style="margin-right: 7px;font-size: 20px;">Jacket Crown</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="card">
+                                                <div class="card-body d-inline-flex">
+                                                    <h6 class="text-muted card-subtitle mb-2" style="font-size: 20px;"><strong>IM&nbsp;</strong>-&nbsp;</h6>
+                                                    <h6 class="text-muted card-subtitle mb-2" style="margin-right: 7px;font-size: 20px;">Impacted</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="card">
+                                                <div class="card-body d-inline-flex">
+                                                    <h6 class="text-muted card-subtitle mb-2" style="font-size: 20px;"><strong>Un </strong>-&nbsp;</h6>
+                                                    <h6 class="text-muted card-subtitle mb-2" style="margin-right: 7px;font-size: 20px;">Unerupted</h6>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top: 20px;">
+                                <div class="col" style="text-align: right;height: 200px;">
+                                    <h1 class="text-center">Diagnosis</h1><textarea class="form-control" name="diagnosis" placeholder="Diagnosis" style="height: 70%;"></textarea>
+                                </div>
+                                <div class="col" style="height: 200px;">
+                                    <h1 class="text-center">Treatment Given</h1><textarea class="form-control" name="treatment" placeholder="Treatment" style="height: 70%;"></textarea>
+                                </div>
+                                <div class="col" style="height: 200px;">
+                                    <h1 class="text-center">Remarks</h1><textarea class="form-control" name="remarks" placeholder="Remarks" style="height: 70%;"></textarea>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top: 20px;">
+                                <div class="col" style="text-align: right;"><button class="btn btn-primary" type="submit">Submit</button></div>
+                            </div>
+                        </section>
+                    </form>
+                </div>
+            </div>
+            <footer class="bg-white sticky-footer">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright"><span>Copyright @ iDentify 2023</span></div>
+                </div>
+            </footer>
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="modalHistory">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Dental History</h4><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body"><?php
+include 'setup.php';
+
+$id = isset($_GET['student_id']) ? $_GET['student_id'] : '';
+
+$sql = "SELECT date, diagnosis, treatment, remarks FROM student_profile WHERE student_id = '$id'";
+$result_select = mysqli_query($conn, $sql);
+
+if ($result_select === false) {
+    die("Error executing query: " . mysqli_error($conn));
+}
+?>
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Diagnosis</th>
+                <th>Treatment Given</th>
+                <th>Remarks</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            while ($row = mysqli_fetch_assoc($result_select)) {
+                echo "<tr>";
+                echo "<td>" . htmlspecialchars($row['date']) . "</td>";
+                echo "<td>" . htmlspecialchars($row['diagnosis']) . "</td>";
+                echo "<td>" . htmlspecialchars($row['treatment']) . "</td>";
+                echo "<td>" . htmlspecialchars($row['remarks']) . "</td>";
+                echo "</tr>";
+            }
+            ?>
+        </tbody>
+    </table>
+</div>
+</div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="modalOral">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Oral Health Assessment</h4><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body"><?php
+include 'setup.php';
+
+// Check if student_id is set in the URL
+$id = isset($_GET['student_id']) ? $_GET['student_id'] : '';
+
+// Select user data from the users table based on student_id
+$sql = "SELECT student_id, first_name, last_name, course, age, gender, department FROM users WHERE student_id = '$id'";
+$result_select = mysqli_query($conn, $sql);
+
+// Check if the query executed successfully
+if ($result_select === false) {
+    die("Error executing query: " . mysqli_error($conn));
+}
+
+// Generate HTML form to edit the selected user data
+if (mysqli_num_rows($result_select) == 1) {
+    $row = mysqli_fetch_assoc($result_select);
+    $student_id = $row["student_id"];
+    $fname = $row["first_name"];
+    $lname = $row["last_name"];
+    $course = $row["course"];
+    $department = $row["department"];
+    $age = $row["age"];
+    $gender = $row["gender"];
+
+
+}
+?>
+<form action="oralassess.php" method="POST">
+    <div class="card shadow">
+        <div class="card-body">
+            <div>
+                <div>
+                    <input type="hidden" id="studentid" name="studentid" value="<?php echo $student_id; ?>" >
+                    <input type="hidden" id="student_fname" name="student_fname" value="<?php echo $fname; ?>" >
+                    <input type="hidden" id="student_lname" name="student_lname" value="<?php echo $lname; ?>" >
+                    <input type="hidden" id="student_course" name="student_course" value="<?php echo $course; ?>">
+                    <input type="hidden" id="student_department" name="student_department" value="<?php echo $department; ?>">
+                    <input type="hidden" id="student_age" name="student_age" value="<?php echo $age; ?>">
+                    <input type="hidden" id="student_gender" name="student_gender" value="<?php echo $gender; ?>">
+
+                </div>                
+                <fieldset>
+                    <legend><strong>Lips</strong></legend>
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="0" name="Lips" id="lipsOption1"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="lipsOption1">Smooth, pink, moist</label>
+                    </div>
+                    
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="1" name="Lips" id="lipsOption2"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="lipsOption2">Dry, chapped, or red at corners</label>
+                    </div>
+                    
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="2" name="Lips" id="lipsOption3"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="lipsOption3">Swelling or lump, white, red or ulcerated patch; bleeding or ulcerated at corners<br /></label>
+                    </div>
+                </fieldset>
+            </div>                                          
+            <div>
+                <fieldset>
+                    <legend><strong>Dental Pain</strong></legend>
+            
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="0" name="Dental" id="dentalOption1"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="dentalOption1">No behavioural, verbal, or physical signs of dental pain</label>
+                    </div>
+            
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="1" name="Dental" id="dentalOption2"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="dentalOption2">There are verbal and/or behavioural signs of pain such as pulling at face, chewing lips, not eating, aggression</label>
+                    </div>
+            
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="2" name="Dental" id="dentalOption3"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="dentalOption3">There are physical pain signs (swelling of cheek or gum, broken teeth, ulcers), as well as verbal and/or behavioural signs (pulling at face, not eating, aggression)<br /></label>
+                    </div>
+                </fieldset>
+            </div>            
+            <div>
+                <fieldset>
+                    <legend><strong>Natural Teeth Yes/No</strong></legend>
+            
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="0" name="Teeth" id="teethOption1"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="teethOption1">No decayed or broken teeth or roots</label>
+                    </div>
+            
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="1" name="Teeth" id="teethOption2"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="teethOption2">1-3 decayed or broken teeth or roots or very worn down teeth</label>
+                    </div>
+            
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="2" name="Teeth" id="teethOption3"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="teethOption3">4+ decayed or broken teeth or roots, or very worn down teeth, or less than 4 teeth<br /></label>
+                    </div>
+                </fieldset>
+            </div>            
+            <div>
+                <fieldset>
+                    <legend><strong>Dentures Yes/No</strong></legend>
+            
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="0" name="Dentures" id="denturesOption1"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="denturesOption1">No broken areas or teeth, dentures regularly worn, and named</label>
+                    </div>
+            
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="1" name="Dentures" id="denturesOption2"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="denturesOption2">1 broken area or tooth or dentures only worn for 1-2 hours daily, or dentures not named, or loose</label>
+                    </div>
+            
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="2" name="Dentures" id="denturesOption3"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="denturesOption3">More than 1 broken area or tooth, dentures missing or not worn, loose and needs denture adhesive, or not named<br /></label>
+                    </div>
+                </fieldset>
+            </div>            
+            <div>
+                <fieldset>
+                    <legend><strong>Oral Cleanliness</strong></legend>
+            
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="0" name="Oral" id="oralOption1"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="oralOption1">Clean and no food particles or tartar in mouth or dentures</label>
+                    </div>
+            
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="1" name="Oral" id="oralOption2"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="oralOption2">Food particles, tartar, or plaque in 1-2 areas of the mouth or on a small area of dentures or halitosis (bad breath)</label>
+                    </div>
+            
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="2" name="Oral" id="oralOption3"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="oralOption3">Food particles, tartar, or plaque in most areas of the mouth or on most of dentures or severe halitosis (bad breath)<br /></label>
+                    </div>
+                </fieldset>
+            </div>            
+            <div>
+                <fieldset>
+                    <legend><strong>Saliva</strong></legend>
+            
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="0" name="Saliva" id="salivaOption1"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="salivaOption1">Moist tissues, watery and free-flowing saliva</label>
+                    </div>
+            
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="1" name="Saliva" id="salivaOption2"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="salivaOption2">Food particles, tartar, or plaque in 1-2 areas of the mouth or on a small area of dentures or halitosis (bad breath)</label>
+                    </div>
+            
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="2" name="Saliva" id="salivaOption3"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="salivaOption3">Tissues parched and red, little or no saliva present, saliva is thick, resident thinks they have a dry mouth<br /></label>
+                    </div>
+                </fieldset>
+            </div>            
+            <div>
+                <fieldset>
+                    <legend><strong>Tongue</strong></legend>
+            
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="0" name="Tongue" id="tongueOption1"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="tongueOption1">Normal, moist roughness, pink</label>
+                    </div>
+            
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="1" name="Tongue" id="tongueOption2"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="tongueOption2">Patchy, fissured, red, coated</label>
+                    </div>
+            
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="2" name="Tongue" id="tongueOption3"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="tongueOption3">Patch that is red and/or white, ulcerated, swollen<br /></label>
+                    </div>
+                </fieldset>
+            </div>            
+            <div>
+                <fieldset>
+                    <legend><strong>Gums and Tissues</strong></legend>
+            
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="0" name="Gums" id="gumsOption1"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="gumsOption1">Pink, moist, smooth, no bleeding</label>
+                    </div>
+            
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="1" name="Gums" id="gumsOption2"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="gumsOption2">Dry, shiny, rough, red, swollen, 1 ulcer or sore spot under dentures</label>
+                    </div>
+            
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="2" name="Gums" id="gumsOption3"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="gumsOption3">Swollen, bleeding, ulcers, white/red patches, generalized redness under dentures<br /></label>
+                    </div>
+                </fieldset>
+            </div> 
+            <div>
+                <fieldset>
+                    <legend><strong>How Often do you Brush your Teeth?</strong></legend>
+            
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="0" name="Hygiene" id="hygieneOption1"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="hygieneOption1">Often (3x or more per day)</label>
+                    </div>
+            
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="1" name="Hygiene" id="hygieneOption2"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="hygieneOption2">Sometimes (1x per day)</label>
+                    </div>
+            
+                    <div class="custom-control custom-radio d-flex align-items-center">
+                        <input class="custom-control-input" type="radio" style="margin-right: 5px;" value="2" name="Hygiene" id="hygieneOption3"/>
+                        <label class="form-label custom-control-label" style="width: 100%;" for="hygieneOption3">Never<br /></label>
+                    </div>
+                </fieldset>
+            </div>     
+            <div class="text-end"><button class="btn btn-primary" type="submit">Submit</button></div>
+        </div>
+    </div>
+</form></div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/bs-init.js"></script>
+    <script src="assets/js/theme.js"></script>
+</body>
+
+</html>

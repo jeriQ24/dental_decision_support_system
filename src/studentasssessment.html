@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Dashboard - Brand</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface&amp;display=swap">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="assets/css/Bootstrap-4-Calendar-No-Custom-Code.css">
+    <link rel="stylesheet" href="assets/css/Icon-Button.css">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0" style="background: url(&quot;assets/img/blue.jpg&quot;);">
+            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+                    <div class="sidebar-brand-icon rotate-n-15"><img src="assets/img/364960463_1215282112492812_4229741986524435405_n.png" style="width: 100%;height: 50px;"></div>
+                    <div class="sidebar-brand-text mx-3"><span>iDentify<br></span></div>
+                </a>
+                <hr class="sidebar-divider my-0">
+                <ul class="navbar-nav text-light" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link" href="studentdash.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="studentprofile.php"><i class="fas fa-user"></i><span>Profile</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="studentmonitor.php"><i class="fas fa-chalkboard-teacher"></i><span>Food Monitoring</span></a></li>
+                    <li class="nav-item dropdown"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><i class="far fa-chart-bar"></i>Profiling</a>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="studentassessment.php">Oral Assessment</a><a class="dropdown-item" href="studentmonitoring.php">Food Intake Monitoring</a></div>
+                    </li>
+                </ul>
+                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content">
+                <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
+                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                        <ul class="navbar-nav flex-nowrap ms-auto">
+                            <li class="nav-item dropdown d-sm-none no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><i class="fas fa-search"></i></a>
+                                <div class="dropdown-menu dropdown-menu-end p-3 animated--grow-in" aria-labelledby="searchDropdown">
+                                    <form class="me-auto navbar-search w-100">
+                                        <div class="input-group"><input class="bg-light form-control border-0 small" type="text" placeholder="Search for ...">
+                                            <div class="input-group-append"><button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown no-arrow mx-1"><div class="nav-item dropdown no-arrow">
+    <a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#">
+        <div>
+            <?php
+            include 'setup.php';
+
+            // Sanitize user input
+            $student_id = (isset($_SESSION['student_id'])) ? intval($_SESSION['student_id']) : 0;
+
+            // Initialize a variable to store pending appointment notifications
+            $pendingAppointmentsHtml = '';
+
+            // Directly embed the value into the SQL query (not recommended for user input)
+            $sql = "SELECT description, date, status FROM appointment WHERE student_id = $student_id AND status IN ('Rescheduled', 'Approved')";
+            $result = $conn->query($sql);
+            
+            // ... rest of your code
+                        $result = $conn->query($sql);
+
+            // Count the number of unseen notifications
+            $unseenCount = 0;
+
+            if ($result && $result->num_rows > 0) {
+                // Loop through pending appointments
+                while ($row = $result->fetch_assoc()) {
+                    $description = htmlspecialchars($row['description']); // Escape output
+                    $status = htmlspecialchars($row['status']); // Escape output
+                    $date = htmlspecialchars($row['date']); // Escape output
+
+                    // Concatenate notification message to the variable
+                    $pendingAppointmentsHtml .= '
+                    <a class="dropdown-item d-flex align-items-center" href="studentdash.php" style="text-decoration: none; color: inherit;">
+                        <div class="me-3">
+                            <div class="bg-primary icon-circle"><i class="fas fa-calendar-alt text-white"></i></div>
+                        </div>
+                        <div>
+                            <span class="small text-gray-500">' . $status . '</span>
+                            <p>' . $description . ' ' . $date . ' </p>
+                        </div>
+                    </a>
+                    ';
+
+                    $unseenCount++;
+                }
+
+                // No need to close the result set for a simple query
+            }
+
+            // Output notification icon with badge
+            echo '<i class="fas fa-bell fa-fw"></i>';
+            echo '<span class="badge bg-danger badge-counter">' . $unseenCount . '</span>';
+            ?>
+        </div>
+    </a>
+    <div class="dropdown-menu dropdown-menu-end dropdown-list animated--grow-in" style="max-height: 200px; overflow-y: auto;">
+        <h6 class="dropdown-header">Notifications</h6>
+        <!-- Output the concatenated notification messages -->
+        <?php echo $pendingAppointmentsHtml; ?>
+    </div>
+</div>
+</li>
+                            <li class="nav-item dropdown no-arrow">
+                                <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><?php
+include 'setup.php';
+
+// Assuming you have a user_id stored in the session (replace this with your actual session variable)
+$user_id = $_SESSION['user_id'];
+
+// Fetch the first_name and last_name from the user table
+$query = "SELECT first_name, last_name FROM users WHERE id = '$user_id'";
+$result = mysqli_query($conn, $query);
+
+if (mysqli_num_rows($result) == 1) {
+    $row = mysqli_fetch_assoc($result);
+    $first_name = $row['first_name'];
+    $last_name = $row['last_name'];
+    
+    // Output the data within the HTML span element
+    echo '<span class="d-none d-lg-inline me-2 text-gray-600 small">' . $first_name . ' ' . $last_name . '</span>';
+} else {
+    echo '<span class="d-none d-lg-inline me-2 text-gray-600 small">User not found</span>';
+}
+?>
+</a>
+                                    <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in"><a class="dropdown-item" href="studentprofile.php"><i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Profile</a>
+                                        <div class="dropdown-divider"></div><a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Logout</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="container-fluid">
+                    <div class="d-sm-flex justify-content-between align-items-center mb-4">
+                        <h3 class="text-dark mb-0">Student Dashboard</h3>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-xl-6 col-xxl-6 mb-4"><?php
+include 'setup.php';
+
+// Use proper escaping for the user input (student_id) to prevent SQL injection
+$student_id = $conn->real_escape_string($_SESSION['student_id']);
+
+// Count the number of visits for the student
+$sql = "SELECT COUNT(*) AS num_visits FROM appointment WHERE status = 'Done' AND student_id = '$student_id'";
+$result = $conn->query($sql);
+
+$numVisits = 0; // Initialize the number of visits
+
+if ($result && $result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $numVisits = $row['num_visits'];
+    $result->free();  // Free the result set
+}
+
+$conn->close();
+?>
+
+<div class="card shadow border-start-primary py-2">
+    <div class="card-body">
+        <div class="row align-items-center no-gutters">
+            <div class="col me-2">
+                <div class="text-uppercase text-primary fw-bold text-xs mb-1"><span style="font-size: 10px;">Total number of visits</span></div>
+                <div class="text-dark fw-bold h5 mb-0"><span><?php echo $numVisits; ?></span></div>
+            </div>
+            <div class="col-auto"><i class="fas fa-tooth fa-2x text-gray-300"></i></div>
+        </div>
+    </div>
+</div>
+</div>
+                        <div class="col-md-6 col-xl-6 mb-4"><?php
+// Make sure session is started
+include 'setup.php';
+
+// Use proper escaping for the user input (student_id) to prevent SQL injection
+$student_id = $conn->real_escape_string($_SESSION['student_id']);
+
+// Retrieve the last date of visit
+$sql = "SELECT MAX(date) AS last_visit FROM appointment WHERE status = 'Done' AND student_id = '$student_id'";
+
+$result = $conn->query($sql);
+
+$lastVisitDate = "No recent visits"; // Default message for no recent visits
+
+if ($result && $result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    if ($row['last_visit'] !== null) {
+        $lastVisitDate = $row['last_visit'];
+    }
+    $result->free();  // Free the result set
+}
+
+$conn->close();
+?>
+
+<div class="card shadow border-start-success py-2">
+    <div class="card-body">
+        <div class="row align-items-center no-gutters">
+            <div class="col me-2">
+                <div class="text-uppercase text-success fw-bold text-xs mb-1"><span class="text-primary" style="font-size: 10px;">Date of THE last VISIT</span></div>
+                <div class="text-dark fw-bold h5 mb-0"><span><?php echo $lastVisitDate; ?></span></div>
+            </div>
+            <div class="col-auto"><i class="far fa-calendar-alt fa-2x text-gray-300"></i></div>
+        </div>
+    </div>
+</div>
+</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-xl-12 col-xxl-12">
+                            <div class="card shadow mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="text-primary fw-bold m-0">Result of Food Monitoring</h6>
+                                </div>
+                                <div class="card-body"><?php
+include 'setup.php';
+
+$sql_date = "SELECT date FROM food_monitoring WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$result_date = mysqli_query($conn, $sql_date);
+
+if (mysqli_num_rows($result_date) > 0) {
+    $row_date = mysqli_fetch_assoc($result_date);
+    $latest_date = $row_date['date'];
+
+    // Convert the date into words
+    $date_in_words = date("F j, Y", strtotime($latest_date));
+} else {
+    $date_in_words = " ";
+    echo "<h4><strong>Please take food monitoring exam, <a href='studentmonitor.php'>click here</a></strong></h4>";
+
+}
+
+// Output the concatenated string
+echo "<h4><strong>Latest Recommendations</strong> $date_in_words</h4>";
+?>
+
+                                    <div class="row"><?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sqlFruits = "SELECT resultFruits FROM food_monitoring WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$resultFruits = mysqli_query($conn, $sqlFruits);
+
+if (mysqli_num_rows($resultFruits) > 0) {
+    $row = mysqli_fetch_assoc($resultFruits);
+    $fruitsResult = $row['resultFruits'];
+} else {
+    $fruitsResult = "No data available"; // or any default message you want to display
+}
+?>
+
+<div class="col-lg-3 col-xl-3 col-xxl-3">
+    <h5><strong>Fruits</strong></h5>
+    <p><?php echo $fruitsResult; ?></p>
+</div>
+<?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sqlVeg = "SELECT resultVeg FROM food_monitoring WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$resultVeg = mysqli_query($conn, $sqlVeg);
+
+if (mysqli_num_rows($resultVeg) > 0) {
+    $row = mysqli_fetch_assoc($resultVeg);
+    $vegResult = $row['resultVeg'];
+} else {
+    $vegResult = "No data available"; // or any default message you want to display
+}
+?>
+
+<div class="col-lg-3 col-xl-3 col-xxl-3">
+    <h5><strong>Vegetables</strong></h5>
+    <p><?php echo $vegResult; ?></p>
+</div>
+<?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sqlGrains = "SELECT resultGrain FROM food_monitoring WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$resultGrains = mysqli_query($conn, $sqlGrains);
+
+if (mysqli_num_rows($resultGrains) > 0) {
+    $row = mysqli_fetch_assoc($resultGrains);
+    $grainsResult = $row['resultGrain'];
+} else {
+    $grainsResult = "No data available"; // or any default message you want to display
+}
+?>
+
+<div class="col-lg-3 col-xl-3 col-xxl-3">
+    <h5><strong>Grains</strong></h5>
+    <p><?php echo $grainsResult; ?></p>
+</div>
+<?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sqlDairy = "SELECT resultDairy FROM food_monitoring WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$resultDairy = mysqli_query($conn, $sqlDairy);
+
+if (mysqli_num_rows($resultDairy) > 0) {
+    $row = mysqli_fetch_assoc($resultDairy);
+    $dairyResult = $row['resultDairy'];
+} else {
+    $dairyResult = "No data available"; // or any default message you want to display
+}
+?>
+
+<div class="col-lg-3 col-xl-3 col-xxl-3">
+    <h5><strong>Dairy</strong></h5>
+    <p><?php echo $dairyResult; ?></p>
+</div>
+<?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sqlProtein = "SELECT resultProtein FROM food_monitoring WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$resultProtein = mysqli_query($conn, $sqlProtein);
+
+if (mysqli_num_rows($resultProtein) > 0) {
+    $row = mysqli_fetch_assoc($resultProtein);
+    $proteinResult = $row['resultProtein'];
+} else {
+    $proteinResult = "No data available"; // or any default message you want to display
+}
+?>
+
+<div class="col-lg-3 col-xl-3 col-xxl-3">
+    <h5><strong>Protein</strong></h5>
+    <p><?php echo $proteinResult; ?></p>
+</div>
+<?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sqlOils = "SELECT resultOils FROM food_monitoring WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$resultOils = mysqli_query($conn, $sqlOils);
+
+if (mysqli_num_rows($resultOils) > 0) {
+    $row = mysqli_fetch_assoc($resultOils);
+    $oilsResult = $row['resultOils'];
+} else {
+    $oilsResult = "No data available"; // or any default message you want to display
+}
+?>
+
+<div class="col-lg-3 col-xl-3 col-xxl-3">
+    <h5><strong>Oils</strong></h5>
+    <p><?php echo $oilsResult; ?></p>
+</div>
+<?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sqlAddedSugar = "SELECT resultAddedSugar FROM food_monitoring WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$resultAddedSugar = mysqli_query($conn, $sqlAddedSugar);
+
+if (mysqli_num_rows($resultAddedSugar) > 0) {
+    $row = mysqli_fetch_assoc($resultAddedSugar);
+    $addedSugarResult = $row['resultAddedSugar'];
+} else {
+    $addedSugarResult = "No data available"; // or any default message you want to display
+}
+?>
+
+<div class="col-lg-3 col-xl-3 col-xxl-3">
+    <h5><strong>Added Sugar</strong></h5>
+    <p><?php echo $addedSugarResult; ?></p>
+</div>
+<?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sqlDrinks = "SELECT resultDrinks FROM food_monitoring WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$resultDrinks = mysqli_query($conn, $sqlDrinks);
+
+if (mysqli_num_rows($resultDrinks) > 0) {
+    $row = mysqli_fetch_assoc($resultDrinks);
+    $drinksResult = $row['resultDrinks'];
+} else {
+    $drinksResult = "No data available"; // or any default message you want to display
+}
+?>
+
+<div class="col-lg-3 col-xl-3 col-xxl-3">
+    <h5><strong>Drinks</strong></h5>
+    <p><?php echo $drinksResult; ?></p>
+</div>
+</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8 col-xl-8 col-xxl-8">
+                            <div class="card shadow mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="text-primary fw-bold m-0">Oral Result Step Line Chart</h6>
+                                </div>
+                                <div class="card-body"><?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+// Fetch all results from the database
+$sql = "SELECT total_results, date FROM dental_assessment WHERE student_id = '$student_id'";
+$result = mysqli_query($conn, $sql);
+
+// Initialize arrays to store results and dates
+$dates = [];
+$results = [];
+
+if (mysqli_num_rows($result) > 0) {
+    // Fetch all rows and store data in arrays
+    while ($row = mysqli_fetch_assoc($result)) {
+        $dates[] = $row['date'];
+        $results[] = $row['total_results'];
+    }
+
+    // Determine the appropriate message based on each total results
+    $results_msg = [];
+    foreach ($results as $result) {
+        if ($result > 6) {
+            $results_msg[] = "Immediate Action Required! Your oral health assessment raises serious concerns that require immediate attention, including visiting a dentist.";
+        } else if ($result > 4 && $result <= 6) {
+            $results_msg[] = "Addressing Oral Health Issues! Your oral health assessment has identified some issues that require attention. Making changes to your diet and oral care routine is strongly recommended.";
+        } else if ($result > 2 && $result <= 4) {
+            $results_msg[] = "Moderate Oral Health Issues! Your oral health assessment identifies moderate concerns. Seeking professional advice is recommended for improved oral health.";
+        } else if ($result == 2) {
+            $results_msg[] = "Watch for changes! Your oral health assessment reveals minor issues. Pay attention to your oral care routine and consider minor adjustments to keep your teeth healthy.";
+        } else if ($result == 1) {
+            $results_msg[] = "Good oral health! Your oral health assessment indicates that you are maintaining good oral hygiene. Maintain your current dental and gum health routines.";
+        } else if ($result < 0) {
+            $results_msg[] = "Excellent job! Your oral health assessment indicates excellent oral hygiene. Continue with your oral care routine.";
+        } else {
+            $results_msg[] = "Your dental assessment is in a normal range.";
+        }
+    }
+
+    // Pass the results and messages to JavaScript
+    echo "<script>";
+    echo "var results = " . json_encode($results) . ";";
+    echo "var dates = " . json_encode($dates) . ";";
+    echo "var resultsMsg = " . json_encode($results_msg) . ";";
+    echo "</script>";
+} else {
+    echo "<p>No results found.</p>";
+}
+?>
+
+<div class="col" style="position: relative;">
+    <canvas id="myChart"></canvas>
+    <p id="resultsMessage"></p> <!-- Add a paragraph for the results message -->
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var results = <?php echo json_encode($results); ?>;
+    var dates = <?php echo json_encode($dates); ?>;
+    var resultsMsg = <?php echo json_encode($results_msg); ?>;
+
+    // Function to generate colors based on result messages
+    function generateColors(resultsMsg) {
+        var colors = [];
+        resultsMsg.forEach(function(msg) {
+            switch(msg) {
+                case "Immediate Action Required! Your oral health assessment raises serious concerns that require immediate attention, including visiting a dentist.":
+                    colors.push('red');
+                    break;
+                case "Addressing Oral Health Issues! Your oral health assessment has identified some issues that require attention. Making changes to your diet and oral care routine is strongly recommended.":
+                    colors.push('blue');
+                    break;
+                case "Moderate Oral Health Issues! Your oral health assessment identifies moderate concerns. Seeking professional advice is recommended for improved oral health.":
+                    colors.push('green');
+                    break;
+                case "Watch for changes! Your oral health assessment reveals minor issues. Pay attention to your oral care routine and consider minor adjustments to keep your teeth healthy.":
+                    colors.push('brown');
+                    break;
+                case "Good oral health! Your oral health assessment indicates that you are maintaining good oral hygiene. Maintain your current dental and gum health routines.":
+                    colors.push('orange');
+                    break;
+                case "Excellent job! Your oral health assessment indicates excellent oral hygiene. Continue with your oral care routine.":
+                    colors.push('violet');
+                    break;
+                default:
+                    colors.push('gray'); // Default color for unknown messages
+            }
+        });
+        return colors;
+    }
+
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Results',
+                data: results,
+                backgroundColor: generateColors(resultsMsg), // Assign colors based on result messages
+                borderColor: 'rgb(75, 192, 192)',
+                pointRadius: 5, // Increase point radius for easier hover
+                lineTension: 0.1,
+                stepped: 'before' // Change to 'after' for after-stepped
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 15 // Set the maximum value of the y-axis to 15
+                }
+            }
+        }
+    });
+
+    var resultsMessage = document.getElementById('resultsMessage');
+
+    myChart.options.onHover = function(event, chartElement) {
+        if (chartElement.length > 0) {
+            var index = chartElement[0].index;
+            resultsMessage.textContent = resultsMsg[index];
+        } else {
+            resultsMessage.textContent = '';
+        }
+    };
+</script>
+</div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-xl-4 col-xxl-4">
+                            <div class="card shadow mb-4" style="height: 95%;">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="text-primary fw-bold m-0">Result of Last Visit</h6>
+                                </div>
+                                <div class="card-body">
+                                    <h4><strong>Latest Dental Assessment</strong></h4><?php
+include 'setup.php';
+
+$sql = "SELECT results FROM dental_assessment WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$result = mysqli_query($conn, $sql);
+
+if (mysqli_num_rows($result) > 0) {
+    // Fetch the results from the result set
+    $row = mysqli_fetch_assoc($result);
+    $results = $row['results'];
+
+    // Output the results within a paragraph
+    echo "<p>$results</p>";
+} else {
+    // If no results found, display a message
+    echo "<p>No results found.</p>";
+}
+?>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-xl-12 col-xxl-12">
+                            <div class="card shadow mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center"><a href="studentappointment.php"><strong>Schedule an Appointment</strong></a></div><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Month Calendar</title>
+    <style>
+        .calendar-container {
+            padding: 20px 0;
+        }
+
+        .calendar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .calendar-header button {
+            background-color: #0074d9;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .calendar-header button:hover {
+            background-color: #0056b3;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            width: 100%;
+        }
+
+        .calendar-day {
+            text-align: center;
+            padding: 30px 15px;
+            font-size: 20px;
+            height: 100px;
+            width: 100px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .calendar-day.weekend {
+            background-color: #fafafa;
+        }
+
+        .selected-day {
+            background-color: #0074d9;
+            color: white;
+        }
+
+        .has-appointment {
+          background-color: #ff9800; /* Change this color to something distinct */
+          color: black; /* Ensure the text color is visible on the background */
+      }
+
+        .appointment-details {
+            display: none;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 800px) {
+            .calendar-day {
+                padding: 10px;
+                font-size: 14px;
+                height: 50px;
+                width: 50px;
+            }
+        }
+
+        @media (max-width: 300px) {
+            .calendar-day {
+                padding: 5px;
+                font-size: 10px;
+                height: 30px;
+                width: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calendar-container">
+        <div class="calendar">
+            <div class="calendar-header">
+                <button id="prevMonth" aria-label="Previous Month">
+                    &lt;
+                </button>
+                <h2 id="currentMonthYear"></h2>
+                <button id="nextMonth" aria-label="Next Month">
+                    &gt;
+                </button>
+            </div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+        </div>
+    </div>
+
+    <div class="appointment-details" id="appointmentDetails">
+        <!-- Container to display appointment details -->
+    </div>
+
+    <script>
+ // Get elements
+const prevMonthButton = document.getElementById('prevMonth');
+const nextMonthButton = document.getElementById('nextMonth');
+const currentMonthYear = document.getElementById('currentMonthYear');
+const calendarGrid = document.getElementById('calendarGrid');
+const appointmentDetails = document.getElementById('appointmentDetails');
+
+// Initialize date
+const currentDate = new Date();
+let selectedDate = currentDate;
+
+// Function to display appointment details
+function showAppointmentDetails(appointments) {
+    if (appointments && appointments.length > 0) {
+        const detailsHTML = appointments.map(appointment => {
+            const formattedTime = appointment.formatted_time;
+            const description = appointment.description;
+
+            return `
+                <div>
+                    <strong>Time: </strong>${formattedTime}
+                </div>
+                <div>
+                    <strong>Description: </strong>${description}
+                </div>
+                <hr>
+            `;
+        }).join('');
+
+        appointmentDetails.innerHTML = detailsHTML;
+        appointmentDetails.style.display = 'block';
+    } else {
+        appointmentDetails.style.display = 'none';
+    }
+}
+
+// Function to update the calendar
+function updateCalendar(appointments) {
+    const year = selectedDate.getFullYear();
+    const month = selectedDate.getMonth();
+    const firstDayOfMonth = new Date(year, month, 1);
+    const lastDayOfMonth = new Date(year, month + 1, 0);
+
+    // Update current month and year display
+    currentMonthYear.textContent = firstDayOfMonth.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+    // Clear previous calendar grid
+    calendarGrid.innerHTML = '';
+
+    // Create calendar days
+    for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
+        const date = new Date(year, month, day);
+        const dayElement = document.createElement('div');
+        dayElement.classList.add('calendar-day');
+
+        // Check if the current date has an appointment
+        const appointment = appointments.find(app => {
+            const appDate = new Date(app.date);
+            return (
+                appDate.getDate() === date.getDate() &&
+                appDate.getMonth() === date.getMonth() &&
+                appDate.getFullYear() === date.getFullYear()
+            );
+        });
+
+        if (date.toDateString() === selectedDate.toDateString()) {
+            dayElement.classList.add('selected-day');
+        }
+
+        if (appointment) {
+    dayElement.classList.add('has-appointment');
+    dayElement.textContent = day; // Show the day number even if there's an appointment
+    dayElement.style.backgroundColor = '#a5dde2'; // Set the background color to yellow for days with appointments
+} else {
+    dayElement.textContent = day;
+}
+
+        dayElement.addEventListener('click', () => {
+            showAppointmentDetails(appointments.filter(app => {
+                const appDate = new Date(app.date);
+                return (
+                    appDate.getDate() === date.getDate() &&
+                    appDate.getMonth() === date.getMonth() &&
+                    appDate.getFullYear() === date.getFullYear()
+                );
+            }));
+        });
+        calendarGrid.appendChild(dayElement);
+
+        // Add a weekend class for Saturday and Sunday
+        if (date.getDay() === 0 || date.getDay() === 6) {
+            dayElement.classList.add('weekend');
+        }
+    }
+}
+
+// Event listeners for navigating between months
+prevMonthButton.addEventListener('click', () => {
+    selectedDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, selectedDate.getDate());
+    fetchAppointmentsAndUpdateCalendar();
+});
+
+nextMonthButton.addEventListener('click', () => {
+    selectedDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, selectedDate.getDate());
+    fetchAppointmentsAndUpdateCalendar();
+});
+
+// Function to fetch appointments and update the calendar
+function fetchAppointmentsAndUpdateCalendar() {
+            fetch('get_appointments.php')
+                .then(response => response.json())
+                .then(appointments => {
+                    updateCalendar(appointments);
+                });
+        }
+
+// Initial calendar update
+fetchAppointmentsAndUpdateCalendar();
+    </script>
+</body>
+</html>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"></div>
+                </div>
+            </div>
+            <footer class="bg-white sticky-footer">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright"><span>Copyright @ iDentify 2023</span></div>
+                </div>
+            </footer>
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="medicalEvaluation">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"><strong>Medical Evaluation</strong></h4><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form><input class="form-control" type="hidden" id="student_id_input" name="student_id_input"><input class="form-control" type="hidden" id="fname_input" name="fname_input"><input class="form-control" type="hidden" id="lname_input" name="lname_input"><input class="form-control" type="hidden" id="course_input" name="course_input">
+                        <div class="row">
+                            <div class="col">
+                                <div class="mb-3"><label class="form-label" for="username"><strong>Are you under current medical treatment?</strong></label><select class="form-select form-control" id="medical_treatment" name="medical_treatment">
+                                        <option value="Yes">Yes</option>
+                                        <option value="No" selected="">No</option>
+                                    </select></div>
+                            </div>
+                            <div class="col">
+                                <div class="mb-3"><label class="form-label" for="email"><strong>Have you had any major operation?</strong><br></label><select class="form-select form-control" id="major_operation" name="major_operation">
+                                        <option value="Yes">Yes</option>
+                                        <option value="No" selected="">No</option>
+                                    </select></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="mb-3"><label class="form-label" for="username"><strong>Has a physician informed you that you have or had:</strong></label>
+                                    <div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <div>
+                                                    <p class="text-center">Heart Ailment</p><select class="form-select form-control" id="heart_ailment" name="heart_ailment">
+                                                        <option value="Yes">Yes</option>
+                                                        <option value="No" selected="">No</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div>
+                                                    <p class="text-center">High Blood Pressure</p><select class="form-select form-control" id="highblood" name="highblood">
+                                                        <option value="Yes">Yes</option>
+                                                        <option value="No" selected="">No</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div>
+                                                    <p class="text-center">Diabetes</p><select class="form-select form-control" id="diabetes" name="diabetes">
+                                                        <option value="Yes">Yes</option>
+                                                        <option value="No" selected="">No</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <div>
+                                                    <p class="text-center">Rheumatic Fever</p><select class="form-select form-control" id="rheumatic_fever" name="rheumatic_fever">
+                                                        <option value="Yes">Yes</option>
+                                                        <option value="No" selected="">No</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div>
+                                                    <p class="text-center">Lung Disease</p><select class="form-select form-control" id="lung_disease" name="lung_disease">
+                                                        <option value="Yes">Yes</option>
+                                                        <option value="No" selected="">No</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div>
+                                                    <p class="text-center">Any Liver Disease</p><select class="form-select form-control" id="liver_disease" name="liver_disease">
+                                                        <option value="Yes">Yes</option>
+                                                        <option value="No" selected="">No</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="mb-3"><label class="form-label" for="first_name"><strong>Do you have night sweats, cough and weight loss?</strong></label><select class="form-select form-control" id="weight_loss" name="weight_loss">
+                                        <option value="Yes">Yes</option>
+                                        <option value="No" selected="">No</option>
+                                    </select></div>
+                            </div>
+                            <div class="col">
+                                <div class="mb-3"><label class="form-label" for="first_name"><strong>Are you allergic to any food or medicine?</strong></label><select class="form-select form-control" id="medicine" name="medicine">
+                                        <option value="Yes">Yes</option>
+                                        <option value="No" selected="">No</option>
+                                    </select></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="mb-3"><label class="form-label" for="first_name"><strong>Are you taking any drugs or medication?</strong></label><select class="form-select form-control" id="medication" name="medication">
+                                        <option value="Yes">Yes</option>
+                                        <option value="No" selected="">No</option>
+                                    </select></div>
+                            </div>
+                            <div class="col">
+                                <div class="mb-3"><label class="form-label" for="first_name"><strong>Are you on any kind of special diet?</strong></label><select class="form-select form-control" id="special_diet" name="special_diet">
+                                        <option value="Yes">Yes</option>
+                                        <option value="No" selected="">No</option>
+                                    </select></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="mb-3"><label class="form-label" for="first_name"><strong>Do you experience shortness of breath when climbing stairs?</strong></label><select class="form-select form-control" id="climb_stairs" name="climb_stairs">
+                                        <option value="Yes">Yes</option>
+                                        <option value="No" selected="">No</option>
+                                    </select></div>
+                            </div>
+                            <div class="col">
+                                <div class="mb-3"><label class="form-label" for="first_name"><strong>Have you experienced any complication with healing?</strong></label><select class="form-select form-control" id="healing" name="healing">
+                                        <option value="Yes">Yes</option>
+                                        <option value="No" selected="">No</option>
+                                    </select></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="mb-3"><label class="form-label" for="first_name"><strong>Are you in good general health at this time?</strong></label><select class="form-select form-control" id="general_health" name="general_health">
+                                        <option value="Yes">Yes</option>
+                                        <option value="No" selected="">No</option>
+                                    </select></div>
+                            </div>
+                            <div class="col">
+                                <div class="mb-3"><label class="form-label" for="first_name"><strong>Are you pregnant? If so, how many months?</strong></label><select class="form-select form-control" id="pregnant" name="pregnant">
+                                        <option value="Yes">Yes</option>
+                                        <option value="No" selected="">No</option>
+                                    </select></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="mb-3"><label class="form-label" for="first_name"><strong>Have you experienced profuse bleeding after tooth extraction?</strong></label><select class="form-select form-control" id="tooth_extraction" name="tooth_extraction">
+                                        <option value="Yes">Yes</option>
+                                        <option value="No" selected="">No</option>
+                                    </select></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer"><button class="btn btn-primary" type="button">Save</button></div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/bs-init.js"></script>
+    <script src="assets/js/theme.js"></script>
+</body>
+
+</html>

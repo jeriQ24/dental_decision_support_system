@@ -1,0 +1,153 @@
+<?php
+include 'setup.php';
+
+$sqlDept = "SELECT 
+            DISTINCT YEAR(date) AS year, MONTH(date) AS month, department,
+            SUM(CASE WHEN result = 'Low Risk' THEN 1 ELSE 0 END) AS low_risk,
+            SUM(CASE WHEN result = 'Moderate Risk' THEN 1 ELSE 0 END) AS moderate_risk,
+            SUM(CASE WHEN result = 'High Risk' THEN 1 ELSE 0 END) AS high_risk,
+            COUNT(*) AS total
+            FROM food_monitoring
+            GROUP BY department
+            ORDER BY department";
+
+$result = mysqli_query($conn, $sqlDept);
+
+$departments = [];
+$lowRisk = [];
+$moderateRisk = [];
+$highRisk = [];
+$total = [];
+
+while ($row = mysqli_fetch_assoc($result)) {
+$departments[] = $row['department'];
+$lowRisk[] = $row['low_risk'];
+$moderateRisk[] = $row['moderate_risk'];
+$highRisk[] = $row['high_risk'];
+$total[] = $row['total']; // Add total to the array
+}
+
+// Fetch distinct years and months
+$sqlDistinctDates = "SELECT DISTINCT YEAR(date) AS year, MONTH(date) AS month FROM food_monitoring ORDER BY year DESC, month DESC";
+$resultDistinctDates = mysqli_query($conn, $sqlDistinctDates);
+
+$years = [];
+$months = [];
+
+while ($row = mysqli_fetch_assoc($resultDistinctDates)) {
+$years[] = $row['year'];
+$months[] = $row['month'];
+}
+$years = array_unique($years);
+$months = array_unique($months);
+?>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="card shadow mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="text-primary fw-bold m-0">By Department</h6>
+    </div>
+    <div class="card-body">
+        <div class="select" style="display: flex;">
+            <select class="form-control" id="deptSelectYear" style="width: 25%; margin-right: 5px;">
+                <?php foreach ($years as $year) { ?>
+                    <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
+                <?php } ?>
+            </select>
+
+            <select class="form-control" id="deptSelectMonth" style="width: 25%; margin-left: 5px;">
+                <?php foreach ($months as $month) { ?>
+                    <option value="<?php echo $month; ?>"><?php echo date("F", mktime(0, 0, 0, $month, 1)); ?></option>
+                <?php } ?>
+            </select>
+        </div>
+        <canvas id="deptBarChart" width="400" height="200"></canvas>
+    </div>
+</div>
+
+<script>
+    var deptSelectYear = document.getElementById('deptSelectYear');
+    var deptSelectMonth = document.getElementById('deptSelectMonth');
+    var deptBarChrt; // Define deptBarChrt variable outside the scope of any function
+
+    deptSelectYear.addEventListener('change', deptChartUpdate);
+    deptSelectMonth.addEventListener('change', deptChartUpdate);
+
+    function deptChartUpdate() {
+        var deptYearSelect = deptSelectYear.value;
+        var deptMonthSelect = deptSelectMonth.value;
+
+        fetch('fetch_department_data.php?year=' + deptYearSelect + '&month=' + deptMonthSelect)
+        .then(response => response.text())
+        .then(data => {
+            return JSON.parse(data);
+        })
+        .then(data => {
+            // Check if myChart is defined before updating it
+            if (deptBarChrt) {
+                deptBarChrt.data.labels = data.departments;
+                deptBarChrt.data.datasets[0].data = data.low_risk;
+                deptBarChrt.data.datasets[1].data = data.moderate_risk;
+                deptBarChrt.data.datasets[2].data = data.high_risk;
+                deptBarChrt.data.datasets[3].data = data.total; // Update total dataset
+                deptBarChrt.update();
+            }
+        })
+    }
+
+    // Get the latest year and month values
+    var latestYear = <?php echo $years[0]; ?>;
+    var latestMonth = <?php echo $months[0]; ?>;
+
+    // Set the selected values for the dropdown menus
+    deptSelectYear.value = latestYear;
+    deptSelectMonth.value = latestMonth;
+
+    // Trigger the chart update function with the latest values
+    deptChartUpdate();
+
+    // Initial chart rendering
+    var chart = document.getElementById('deptBarChart').getContext('2d');
+    deptBarChrt = new Chart(chart, {
+        type: 'bar',
+        data: {
+            labels: <?php echo json_encode($departments); ?>,
+            datasets: [
+                {
+                    label: 'High Risk',
+                    data: <?php echo json_encode($highRisk); ?>,
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)', // RED
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Moderate Risk',
+                    data: <?php echo json_encode($moderateRisk); ?>,
+                    backgroundColor: 'rgba(255, 159, 64, 0.5)', // ORANGE
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Low Risk',
+                    data: <?php echo json_encode($lowRisk); ?>,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)', // BLUE
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                },
+                {
+                   label: 'Total', // Add Total label
+                    data: <?php echo json_encode($total); ?>,
+                    backgroundColor: 'rgba(153, 102, 255, 0.5)', // VIOLET
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            scales: {
+                x: {},
+                y: {}
+            }
+        }
+    });
+</script>

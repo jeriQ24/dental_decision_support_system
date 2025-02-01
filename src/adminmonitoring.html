@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Table - Brand</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Aclonica&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Adamina&amp;display=swap">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="assets/css/Bootstrap-4-Calendar-No-Custom-Code.css">
+    <link rel="stylesheet" href="assets/css/Icon-Button.css">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0" style="background: url(&quot;assets/img/blu3.jpg&quot;);">
+            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+                    <div class="sidebar-brand-icon rotate-n-15"><img src="assets/img/364960463_1215282112492812_4229741986524435405_n.png" style="width: 100%;height: 50px;"></div>
+                    <div class="sidebar-brand-text mx-3"><span>iDentify<br></span></div>
+                </a>
+                <hr class="sidebar-divider my-0">
+                <ul class="navbar-nav text-light" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link" href="admindash.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="adminstudents.php"><i class="fas fa-user-friends"></i><span>Students</span></a></li>
+                    <li class="nav-item dropdown"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><i class="fas fa-file-medical-alt"></i>Profiling</a>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="adminassessment.php">Oral Assessment</a><a class="dropdown-item" href="adminmonitoring.php">Food Monitoring</a></div>
+                    </li>
+                </ul>
+                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content">
+                <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
+                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                        <ul class="navbar-nav flex-nowrap ms-auto">
+                            <li class="nav-item dropdown d-sm-none no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><i class="fas fa-search"></i></a>
+                                <div class="dropdown-menu dropdown-menu-end p-3 animated--grow-in" aria-labelledby="searchDropdown">
+                                    <form class="me-auto navbar-search w-100">
+                                        <div class="input-group"><input class="bg-light form-control border-0 small" type="text" placeholder="Search for ...">
+                                            <div class="input-group-append"><button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown no-arrow mx-1"><div class="nav-item dropdown no-arrow">
+    <a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#">
+        <div>
+            <?php
+            include 'setup.php';
+
+            // Initialize a variable to store pending appointment notifications
+            $pendingAppointmentsHtml = '';
+
+            // Select pending appointments with details
+            $sql = "SELECT first_name, last_name, description, date FROM appointment WHERE status = 'Pending'";
+            $result = $conn->query($sql);
+
+            // Count the number of unseen notifications
+            $unseenCount = 0;
+
+            if ($result && $result->num_rows > 0) {
+                // Loop through pending appointments
+                while ($row = $result->fetch_assoc()) {
+                    $firstName = $row['first_name'];
+                    $lastName = $row['last_name'];
+                    $description = $row['description'];
+                    $date = $row['date'];
+
+                    // Concatenate notification message to the variable
+                    $pendingAppointmentsHtml .= '
+                    <a class="dropdown-item d-flex align-items-center" href="admindash.php?modal=pendingModal" style="text-decoration: none; color: inherit;">
+                        <div class="me-3">
+                            <div class="bg-primary icon-circle"><i class="fas fa-calendar-alt text-white"></i></div>
+                        </div>
+                        <div>
+                            <span class="small text-gray-500">' . $firstName . ' ' . $lastName . '</span>
+                            <p>' . $description . ' ' . $date . ' </p>
+                        </div>
+                    </a>
+                    ';
+                    
+                    $unseenCount++;
+                }
+
+                $result->free(); // Free the result set
+            }
+
+            // Output notification icon with badge
+            echo '<i class="fas fa-bell fa-fw"></i>';
+            echo '<span class="badge bg-danger badge-counter">' . $unseenCount . '</span>';
+            ?>
+        </div>
+    </a>
+    <div class="dropdown-menu dropdown-menu-end dropdown-list animated--grow-in" style="max-height: 200px; overflow-y: auto;">
+        <h6 class="dropdown-header">Notifications</h6>
+        <!-- Output the concatenated notification messages -->
+        <?php echo $pendingAppointmentsHtml; ?>
+    </div>
+</div>
+
+</li>
+                            <li class="nav-item dropdown no-arrow">
+                                <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><?php
+include 'setup.php';
+
+// Assuming you have a user_id stored in the session (replace this with your actual session variable)
+$admin_id = $_SESSION['admin_id'];
+
+
+// Fetch the first_name and last_name from the user table
+$query = "SELECT first_name, last_name FROM admin WHERE id = '$admin_id'";
+$result = mysqli_query($conn, $query);
+
+if (mysqli_num_rows($result) == 1) {
+    $row = mysqli_fetch_assoc($result);
+    $first_name = $row['first_name'];
+    $last_name = $row['last_name'];
+    
+    // Output the data within the HTML span element
+    echo '<span class="d-none d-lg-inline me-2 text-gray-600 small">' . $first_name . ' ' . $last_name . '</span>';
+} else {
+    echo '<span class="d-none d-lg-inline me-2 text-gray-600 small">User not found</span>';
+}
+?>
+</a>
+                                    <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in"><a class="dropdown-item" href="admineditprofile.php"><i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Profile</a>
+                                        <div class="dropdown-divider"></div><a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Logout</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="container-fluid">
+                    <h3 class="text-dark mb-4" style="font-family: 'Abril Fatface', serif;"><strong>Food Intake Monitoring Results</strong></h3>
+                    <div class="row">
+                        <div class="col-lg-6 col-xl-10 offset-xl-1" style="height: 80px;padding: 12px;">
+                            <div style="height: 80px;"><div>The chart displays the number of students' food intake monitoring assessment results, aiming to visualize the variations in Low Risk, Moderate Risk and High Risk based on their age group, department and gender.</div></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div><?php
+include 'setup.php';
+
+$sqlAge = "SELECT 
+            DISTINCT age_group,
+            SUM(CASE WHEN result = 'Low Risk' THEN 1 ELSE 0 END) AS low_risk,
+            SUM(CASE WHEN result = 'Moderate Risk' THEN 1 ELSE 0 END) AS moderate_risk,
+            SUM(CASE WHEN result = 'High Risk' THEN 1 ELSE 0 END) AS high_risk
+            FROM (
+                SELECT 
+                    CASE
+                        WHEN age BETWEEN 5 AND 6 THEN '5-6'
+                        WHEN age BETWEEN 7 AND 12 THEN '7-12'
+                        WHEN age BETWEEN 13 AND 16 THEN '13-16'
+                        WHEN age BETWEEN 17 AND 18 THEN '17-18'
+                        WHEN age BETWEEN 19 AND 23 THEN '19-23'
+                        ELSE 'Other'
+                    END AS age_group,
+                    result
+                FROM food_monitoring
+                WHERE age BETWEEN 5 AND 23
+            ) AS subquery
+            GROUP BY age_group
+            ORDER BY FIELD(age_group, '5-6', '7-12', '13-16', '17-18', '19-23', 'Other')";
+
+// Execute SQL query
+$result = mysqli_query($conn, $sqlAge);
+
+$ages = [];
+$lowRisk = [];
+$moderateRisk = [];
+$highRisk = [];
+
+while ($row = mysqli_fetch_assoc($result)) {
+    $ages[] = $row['age_group'];
+    $lowRisk[] = $row['low_risk'];
+    $moderateRisk[] = $row['moderate_risk'];
+    $highRisk[] = $row['high_risk'];
+}
+
+// Fetch distinct years and months
+$sqlDistinctDates = "SELECT DISTINCT YEAR(date) AS year, MONTH(date) AS month FROM food_monitoring ORDER BY year DESC, month DESC";
+$resultDistinctDates = mysqli_query($conn, $sqlDistinctDates);
+
+$years = [];
+$months = [];
+
+while ($row = mysqli_fetch_assoc($resultDistinctDates)) {
+    $years[] = $row['year'];
+    $months[] = $row['month'];
+}
+$years = array_unique($years);
+$months = array_unique($months);
+?>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="card shadow mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="text-primary fw-bold m-0">By Age</h6>
+    </div>
+    <div class="card-body">
+        <div class="select" style="display: flex;">
+            <select class="form-control" id="ageSelectYear" style="width: 25%; margin-right: 5px;">
+                <?php foreach ($years as $year) { ?>
+                    <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
+                <?php } ?>
+            </select>
+
+            <select class="form-control" id="ageMonthSelect" style="width: 25%; margin-left: 5px;">
+                <?php foreach ($months as $month) { ?>
+                    <option value="<?php echo $month; ?>"><?php echo date("F", mktime(0, 0, 0, $month, 1)); ?></option>
+                <?php } ?>
+            </select>
+        </div>
+        <canvas id="ageBarChart" width="400" height="200"></canvas>
+    </div>
+</div>
+
+<script>
+    var ageSelectYear = document.getElementById('ageSelectYear');
+    var ageMonthSelect = document.getElementById('ageMonthSelect');
+    var ageBarChrt; // Define ageBarChrt variable outside the scope of any function
+
+    ageSelectYear.addEventListener('change', ageChartUpdate);
+    ageMonthSelect.addEventListener('change', ageChartUpdate);
+
+    function ageChartUpdate() {
+        var ageYearSelected = ageSelectYear.value;
+        var ageSelectedMonth = ageMonthSelect.value;
+
+        fetch('fetch_age_food_data.php?year=' + ageYearSelected + '&month=' + ageSelectedMonth)
+            .then(response => response.json())
+            .then(data => {
+                // Check if myChart is defined before updating it
+                if (ageBarChrt) {
+                    ageBarChrt.data.labels = data.ages;
+                    ageBarChrt.data.datasets[0].data = data.low_risk;
+                    ageBarChrt.data.datasets[1].data = data.moderate_risk;
+                    ageBarChrt.data.datasets[2].data = data.high_risk;
+                    ageBarChrt.update();
+                }
+            });
+    }
+
+    // Get the latest year and month values
+    var latestYear = <?php echo $years[0]; ?>;
+    var latestMonth = <?php echo $months[0]; ?>;
+
+    // Set the selected values for the dropdown menus
+    ageSelectYear.value = latestYear;
+    ageMonthSelect.value = latestMonth;
+
+    // Trigger the chart update function with the latest values
+    ageChartUpdate();
+
+    // Initial chart rendering
+    var chart = document.getElementById('ageBarChart').getContext('2d');
+    ageBarChrt = new Chart(chart, {
+        type: 'bar',
+        data: {
+            labels: <?php echo json_encode($ages); ?>,
+            datasets: [
+                {
+                    label: 'Low Risk',
+                    data: <?php echo json_encode($lowRisk); ?>,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)', // BLUE
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Moderate Risk',
+                    data: <?php echo json_encode($moderateRisk); ?>,
+                    backgroundColor: 'rgba(255, 159, 64, 0.5)', // ORANGE
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'High Risk',
+                    data: <?php echo json_encode($highRisk); ?>,
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)', // RED
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            scales: {
+                x: {},
+                y: {}
+            }
+        }
+    });
+</script>
+</div>
+                        </div>
+                        <div class="col-lg-6 col-xl-6 col-xxl-6">
+                            <div><?php
+include 'setup.php';
+
+$sqlDept = "SELECT 
+            DISTINCT YEAR(date) AS year, MONTH(date) AS month, department,
+            SUM(CASE WHEN result = 'Low Risk' THEN 1 ELSE 0 END) AS low_risk,
+            SUM(CASE WHEN result = 'Moderate Risk' THEN 1 ELSE 0 END) AS moderate_risk,
+            SUM(CASE WHEN result = 'High Risk' THEN 1 ELSE 0 END) AS high_risk
+            FROM food_monitoring
+            GROUP BY department
+            ORDER BY department";
+
+$result = mysqli_query($conn, $sqlDept);
+
+$departments = [];
+$lowRisk = [];
+$moderateRisk = [];
+$highRisk = [];
+
+while ($row = mysqli_fetch_assoc($result)) {
+    $departments[] = $row['department'];
+    $lowRisk[] = $row['low_risk'];
+    $moderateRisk[] = $row['moderate_risk'];
+    $highRisk[] = $row['high_risk'];
+}
+
+// Fetch distinct years and months
+$sqlDistinctDates = "SELECT DISTINCT YEAR(date) AS year, MONTH(date) AS month FROM food_monitoring ORDER BY year DESC, month DESC";
+$resultDistinctDates = mysqli_query($conn, $sqlDistinctDates);
+
+$years = [];
+$months = [];
+
+while ($row = mysqli_fetch_assoc($resultDistinctDates)) {
+    $years[] = $row['year'];
+    $months[] = $row['month'];
+}
+$years = array_unique($years);
+$months = array_unique($months);
+?>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="card shadow mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="text-primary fw-bold m-0">By Department</h6>
+    </div>
+    <div class="card-body">
+        <div class="select" style="display: flex;">
+            <select class="form-control" id="deptSelectYear" style="width: 25%; margin-right: 5px;">
+                <?php foreach ($years as $year) { ?>
+                    <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
+                <?php } ?>
+            </select>
+
+            <select class="form-control" id="deptSelectMonth" style="width: 25%; margin-left: 5px;">
+                <?php foreach ($months as $month) { ?>
+                    <option value="<?php echo $month; ?>"><?php echo date("F", mktime(0, 0, 0, $month, 1)); ?></option>
+                <?php } ?>
+            </select>
+        </div>
+        <canvas id="deptBarChart" width="400" height="200"></canvas>
+    </div>
+</div>
+
+<script>
+    var deptSelectYear = document.getElementById('deptSelectYear');
+    var deptSelectMonth = document.getElementById('deptSelectMonth');
+    var deptBarChrt; // Define deptBarChrt variable outside the scope of any function
+
+    deptSelectYear.addEventListener('change', deptChartUpdate);
+    deptSelectMonth.addEventListener('change', deptChartUpdate);
+
+    function deptChartUpdate() {
+        var deptYearSelect = deptSelectYear.value;
+        var deptMonthSelect = deptSelectMonth.value;
+
+        fetch('fetch_department_data.php?year=' + deptYearSelect + '&month=' + deptMonthSelect)
+            .then(response => response.text())
+            .then(data => {
+                return JSON.parse(data);
+            })
+            .then(data => {
+                // Check if myChart is defined before updating it
+                if (deptBarChrt) {
+                    deptBarChrt.data.labels = data.departments;
+                    deptBarChrt.data.datasets[0].data = data.low_risk;
+                    deptBarChrt.data.datasets[1].data = data.moderate_risk;
+                    deptBarChrt.data.datasets[2].data = data.high_risk;
+                    deptBarChrt.update();
+                }
+            })
+    }
+
+    // Get the latest year and month values
+    var latestYear = <?php echo $years[0]; ?>;
+    var latestMonth = <?php echo $months[0]; ?>;
+
+    // Set the selected values for the dropdown menus
+    deptSelectYear.value = latestYear;
+    deptSelectMonth.value = latestMonth;
+
+    // Trigger the chart update function with the latest values
+    deptChartUpdate();
+
+    // Initial chart rendering
+    var chart = document.getElementById('deptBarChart').getContext('2d');
+    deptBarChrt = new Chart(chart, {
+        type: 'bar',
+        data: {
+            labels: <?php echo json_encode($departments); ?>,
+            datasets: [
+                {
+                    label: 'Low Risk',
+                    data: <?php echo json_encode($lowRisk); ?>,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)', // BLUE
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Moderate Risk',
+                    data: <?php echo json_encode($moderateRisk); ?>,
+                    backgroundColor: 'rgba(255, 159, 64, 0.5)', // ORANGE
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'High Risk',
+                    data: <?php echo json_encode($highRisk); ?>,
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)', // RED
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            scales: {
+                x: {},
+                y: {}
+            }
+        }
+    });
+</script>
+</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-xl-12 col-xxl-12">
+                            <div><?php
+include 'setup.php';
+
+// Fetching data based on selected month and year
+$sqlGender = "SELECT gender,
+        SUM(CASE WHEN result = 'Low Risk' THEN 1 ELSE 0 END) AS low_risk,
+        SUM(CASE WHEN result = 'Moderate Risk' THEN 1 ELSE 0 END) AS moderate_risk,
+        SUM(CASE WHEN result = 'High Risk' THEN 1 ELSE 0 END) AS high_risk
+        FROM food_monitoring
+        GROUP BY gender
+        ORDER BY gender";
+
+// Debugging statement to output the SQL query
+error_log("SQL Query: $sqlGender");
+
+$result = mysqli_query($conn, $sqlGender);
+
+if (!$result) {
+    // Debugging statement to output any SQL errors
+    error_log("SQL Error: " . mysqli_error($conn));
+    // Handle the error, perhaps display a message to the user
+}
+
+$genders = [];
+$lowRisk = [];
+$moderateRisk = [];
+$highRisk = [];
+
+while ($row = mysqli_fetch_assoc($result)) {
+    $genders[] = $row['gender'];
+    $lowRisk[] = $row['low_risk'];
+    $moderateRisk[] = $row['moderate_risk'];
+    $highRisk[] = $row['high_risk'];
+}
+
+// Fetch distinct years and months
+$sqlDistinctDates = "SELECT DISTINCT YEAR(date) AS year, MONTH(date) AS month FROM food_monitoring ORDER BY year DESC, month DESC";
+$resultDistinctDates = mysqli_query($conn, $sqlDistinctDates);
+
+$years = [];
+$months = [];
+
+while ($row = mysqli_fetch_assoc($resultDistinctDates)) {
+    $years[] = $row['year'];
+    $months[] = $row['month'];
+}
+$years = array_unique($years);
+$months = array_unique($months);
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stacked Bar Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="card shadow mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h6 class="text-primary fw-bold m-0">By Gender</h6>
+        </div>
+        <div class="card-body">
+            <div class="select" style="display: flex;">
+                <select class="form-control" id="genderSelectYear" style="width: 25%; margin-right: 5px;">
+                    <?php foreach ($years as $year) { ?>
+                        <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
+                    <?php } ?>
+                </select>
+
+                <select class="form-control" id="genderSelectMonth" style="width: 25%; margin-left: 5px;">
+                    <?php foreach ($months as $month) { ?>
+                        <option value="<?php echo $month; ?>"><?php echo date("F", mktime(0, 0, 0, $month, 1)); ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+            <canvas id="genderBarChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+
+    <script>
+        var genderSelectYear = document.getElementById('genderSelectYear');
+        var genderSelectMonth = document.getElementById('genderSelectMonth');
+        var genderBarChrt; // Define genderBarChrt variable outside the scope of any function
+
+        genderSelectYear.addEventListener('change', genderChartUpdate);
+        genderSelectMonth.addEventListener('change', genderChartUpdate);
+
+        function genderChartUpdate() {
+            var genderYearSelect = genderSelectYear.value;
+            var genderMonthSelect = genderSelectMonth.value;
+
+            fetch('fetch_gender_data.php?year=' + genderYearSelect + '&month=' + genderMonthSelect)
+            .then(response => response.json())
+            .then(data => {
+                // Check if genderBarChrt is defined before updating it
+                if (genderBarChrt) {
+                    genderBarChrt.data.labels = data.genders;
+                    genderBarChrt.data.datasets[0].data = data.low_risk;
+                    genderBarChrt.data.datasets[1].data = data.moderate_risk;
+                    genderBarChrt.data.datasets[2].data = data.high_risk;
+                    genderBarChrt.update();
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+        }
+
+        // Get the latest year and month values
+        var latestYear = <?php echo $years[0]; ?>;
+        var latestMonth = <?php echo $months[0]; ?>;
+
+        // Set the selected values for the dropdown menus
+        genderSelectYear.value = latestYear;
+        genderSelectMonth.value = latestMonth;
+
+        // Trigger the chart update function with the latest values
+        genderChartUpdate();
+
+        // Initial chart rendering
+        var chart = document.getElementById('genderBarChart').getContext('2d');
+        genderBarChrt = new Chart(chart, {
+            type: 'bar', // Change chart type to 'bar' for stacked bar chart
+            data: {
+                labels: <?php echo json_encode($genders); ?>,
+                datasets: [
+                    {
+                        label: 'Low Risk',
+                        data: <?php echo json_encode($lowRisk); ?>,
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)', // BLUE
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Moderate Risk',
+                        data: <?php echo json_encode($moderateRisk); ?>,
+                        backgroundColor: 'rgba(255, 159, 64, 0.5)', // ORANGE
+                        borderColor: 'rgba(255, 159, 64, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'High Risk',
+                        data: <?php echo json_encode($highRisk); ?>,
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)', // RED
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    x: {
+                        stacked: true, // Stack X-axis
+                    },
+                    y: {
+                        stacked: true, // Stack Y-axis
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="bg-white sticky-footer">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright"><span>Copyright @ iDentify 2023</span></div>
+                </div>
+            </footer>
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    </div>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/bs-init.js"></script>
+    <script src="assets/js/theme.js"></script>
+</body>
+
+</html>

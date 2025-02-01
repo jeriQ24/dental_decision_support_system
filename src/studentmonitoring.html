@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Table - Brand</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Aclonica&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Adamina&amp;display=swap">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="assets/css/Bootstrap-4-Calendar-No-Custom-Code.css">
+    <link rel="stylesheet" href="assets/css/Icon-Button.css">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0" style="background: url(&quot;assets/img/blue.jpg&quot;);">
+            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+                    <div class="sidebar-brand-icon rotate-n-15"><img src="assets/img/364960463_1215282112492812_4229741986524435405_n.png" style="width: 100%;height: 50px;"></div>
+                    <div class="sidebar-brand-text mx-3"><span>iDentify<br></span></div>
+                </a>
+                <hr class="sidebar-divider my-0">
+                <ul class="navbar-nav text-light" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link" href="studentdash.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="studentprofile.php"><i class="fas fa-user"></i><span>Profile</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="studentmonitor.php"><i class="fas fa-chalkboard-teacher"></i><span>Food Monitoring</span></a></li>
+                    <li class="nav-item dropdown"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><i class="fas fa-chart-bar"></i>Profiling</a>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="studentassess.php">Oral Assessment</a><a class="dropdown-item" href="studentmonitoring.php">Food Intake Monitoring</a></div>
+                    </li>
+                </ul>
+                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content">
+                <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
+                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                        <ul class="navbar-nav flex-nowrap ms-auto">
+                            <li class="nav-item dropdown d-sm-none no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><i class="fas fa-search"></i></a>
+                                <div class="dropdown-menu dropdown-menu-end p-3 animated--grow-in" aria-labelledby="searchDropdown">
+                                    <form class="me-auto navbar-search w-100">
+                                        <div class="input-group"><input class="bg-light form-control border-0 small" type="text" placeholder="Search for ...">
+                                            <div class="input-group-append"><button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown no-arrow mx-1"><div class="nav-item dropdown no-arrow">
+    <a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#">
+        <div>
+            <?php
+            include 'setup.php';
+
+            // Sanitize user input
+            $student_id = (isset($_SESSION['student_id'])) ? intval($_SESSION['student_id']) : 0;
+
+            // Initialize a variable to store pending appointment notifications
+            $pendingAppointmentsHtml = '';
+
+            // Directly embed the value into the SQL query (not recommended for user input)
+            $sql = "SELECT description, date, status FROM appointment WHERE student_id = $student_id AND status IN ('Rescheduled', 'Approved')";
+            $result = $conn->query($sql);
+            
+            // ... rest of your code
+                        $result = $conn->query($sql);
+
+            // Count the number of unseen notifications
+            $unseenCount = 0;
+
+            if ($result && $result->num_rows > 0) {
+                // Loop through pending appointments
+                while ($row = $result->fetch_assoc()) {
+                    $description = htmlspecialchars($row['description']); // Escape output
+                    $status = htmlspecialchars($row['status']); // Escape output
+                    $date = htmlspecialchars($row['date']); // Escape output
+
+                    // Concatenate notification message to the variable
+                    $pendingAppointmentsHtml .= '
+                    <a class="dropdown-item d-flex align-items-center" href="studentdash.php" style="text-decoration: none; color: inherit;">
+                        <div class="me-3">
+                            <div class="bg-primary icon-circle"><i class="fas fa-calendar-alt text-white"></i></div>
+                        </div>
+                        <div>
+                            <span class="small text-gray-500">' . $status . '</span>
+                            <p>' . $description . ' ' . $date . ' </p>
+                        </div>
+                    </a>
+                    ';
+
+                    $unseenCount++;
+                }
+
+                // No need to close the result set for a simple query
+            }
+
+            // Output notification icon with badge
+            echo '<i class="fas fa-bell fa-fw"></i>';
+            echo '<span class="badge bg-danger badge-counter">' . $unseenCount . '</span>';
+            ?>
+        </div>
+    </a>
+    <div class="dropdown-menu dropdown-menu-end dropdown-list animated--grow-in" style="max-height: 200px; overflow-y: auto;">
+        <h6 class="dropdown-header">Notifications</h6>
+        <!-- Output the concatenated notification messages -->
+        <?php echo $pendingAppointmentsHtml; ?>
+    </div>
+</div>
+</li>
+                            <li class="nav-item dropdown no-arrow">
+                                <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><?php
+include 'setup.php';
+
+// Assuming you have a user_id stored in the session (replace this with your actual session variable)
+$user_id = $_SESSION['user_id'];
+
+// Fetch the first_name and last_name from the user table
+$query = "SELECT first_name, last_name FROM users WHERE id = '$user_id'";
+$result = mysqli_query($conn, $query);
+
+if (mysqli_num_rows($result) == 1) {
+    $row = mysqli_fetch_assoc($result);
+    $first_name = $row['first_name'];
+    $last_name = $row['last_name'];
+    
+    // Output the data within the HTML span element
+    echo '<span class="d-none d-lg-inline me-2 text-gray-600 small">' . $first_name . ' ' . $last_name . '</span>';
+} else {
+    echo '<span class="d-none d-lg-inline me-2 text-gray-600 small">User not found</span>';
+}
+?>
+</a>
+                                    <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in"><a class="dropdown-item" href="studentprofile.php"><i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Profile</a>
+                                        <div class="dropdown-divider"></div><a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Logout</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="container-fluid">
+                    <h3 class="text-dark mb-4" style="font-family: 'Abril Fatface', serif;"><strong>Food Intake Monitoring Results</strong></h3>
+                </div>
+                <div class="row">
+                    <div class="col-xl-10 offset-xl-1"><?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+// Fetch distinct months
+$month_query = "SELECT DISTINCT DATE_FORMAT(date, '%m') AS month_num, DATE_FORMAT(date, '%M') AS month_name FROM food_monitoring WHERE student_id = '$student_id' ORDER BY month_num";
+$month_result = mysqli_query($conn, $month_query);
+if ($month_result === false) {
+    die("Error executing month query: " . mysqli_error($conn));
+}
+
+// Fetch distinct years
+$year_query = "SELECT DISTINCT DATE_FORMAT(date, '%Y') AS year FROM food_monitoring WHERE student_id = '$student_id' ORDER BY year";
+$year_result = mysqli_query($conn, $year_query);
+if ($year_result === false) {
+    die("Error executing year query: " . mysqli_error($conn));
+}
+
+// Default month and year to the current month and year
+$currentMonth = date('m');
+$currentYear = date('Y');
+
+// Check if a month and year are selected from the form
+if (isset($_POST['selectedMonth']) && isset($_POST['selectedYear'])) {
+    $selectedMonth = $_POST['selectedMonth'];
+    $selectedYear = $_POST['selectedYear'];
+} else {
+    $selectedMonth = $currentMonth;
+    $selectedYear = $currentYear;
+}
+
+$selectedMonthYear = $selectedYear . '-' . str_pad($selectedMonth, 2, '0', STR_PAD_LEFT);
+
+// Query to count occurrences per month for each risk category based on the selected month and year
+$sql = "SELECT 
+            DATE_FORMAT(date, '%M') AS month,
+            COUNT(CASE WHEN result = 'High Risk' THEN 1 END) AS high_risk_count,
+            COUNT(CASE WHEN result = 'Low Risk' THEN 1 END) AS low_risk_count,
+            COUNT(CASE WHEN result = 'Moderate Risk' THEN 1 END) AS moderate_risk_count
+        FROM food_monitoring
+        WHERE DATE_FORMAT(date, '%Y-%m') = '$selectedMonthYear' AND student_id = '$student_id'
+        GROUP BY month
+        ORDER BY month";
+
+$result_select = mysqli_query($conn, $sql);
+
+if ($result_select === false) {
+    die("Error executing query: " . mysqli_error($conn));
+}
+
+$months = [];
+$highRiskCounts = [];
+$lowRiskCounts = [];
+$moderateRiskCounts = [];
+
+while ($row = mysqli_fetch_assoc($result_select)) {
+    $months[] = $row['month'];
+    $highRiskCounts[] = $row['high_risk_count'];
+    $lowRiskCounts[] = $row['low_risk_count'];
+    $moderateRiskCounts[] = $row['moderate_risk_count'];
+}
+?>
+
+<div class="card shadow mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="text-primary fw-bold m-0">Food Monitoring Risk Category Counts Per Month</h6>
+    </div>
+    <style>
+        /* Custom class for adjusting card body size */
+        .custom-card-body {
+            padding: 10px; /* Adjust padding as needed */
+            max-height: 400px; /* Adjust max-height as needed */
+            overflow-y: auto; /* Add scrollbar if content exceeds max-height */
+        }
+    </style>
+
+    <div class="card-body custom-card-body">
+        <div class="table-responsive mt-4">
+            <div class="form-group" style="margin-bottom: 20px;">
+                <!-- Create the month and year selection form -->
+                <form id="monthYearForm" method="POST" style="display: flex; justify-content: center;">
+                    <select class="form-control" name="selectedMonth" id="monthSelect" style="width: 25%; margin-right: 5px;">
+                        <?php
+                        while ($row = mysqli_fetch_assoc($month_result)) {
+                            $month_num = $row['month_num'];
+                            $month_name = $row['month_name'];
+                            echo "<option value=\"$month_num\"";
+                            if ($selectedMonth == $month_num) {
+                                echo " selected";
+                            }
+                            echo ">$month_name</option>";
+                        }
+                        ?>
+                    </select>
+                    <select class="form-control" name="selectedYear" id="yearSelect" style="width: 25%; margin-left: 5px;">
+                        <?php
+                        while ($row = mysqli_fetch_assoc($year_result)) {
+                            $year = $row['year'];
+                            echo "<option value=\"$year\"";
+                            if ($selectedYear == $year) {
+                                echo " selected";
+                            }
+                            echo ">$year</option>";
+                        }
+                        ?>
+                    </select>
+                </form>
+            </div>
+            <table class="table table-bordered" id="riskTable" width="100%" cellspacing="0">
+                <thead>
+                <tr>
+                    <th>Month</th>
+                    <th>High Risk</th>
+                    <th>Low Risk</th>
+                    <th>Moderate Risk</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                for ($i = 0; $i < count($months); $i++) {
+                    echo "<tr>";
+                    echo "<td>{$months[$i]}</td>";
+                    echo "<td>{$highRiskCounts[$i]}</td>";
+                    echo "<td>{$lowRiskCounts[$i]}</td>";
+                    echo "<td>{$moderateRiskCounts[$i]}</td>";
+                    echo "</tr>";
+                }
+                ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // JavaScript to submit form when select option changes
+    document.getElementById('monthSelect').addEventListener('change', function() {
+        document.getElementById('monthYearForm').submit();
+    });
+
+    document.getElementById('yearSelect').addEventListener('change', function() {
+        document.getElementById('monthYearForm').submit();
+    });
+</script>
+</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-10 offset-xl-1">
+                    <div class="card">
+                        <div class="card-body"><?php
+include 'setup.php';
+
+$sql_date = "SELECT date FROM food_monitoring WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$result_date = mysqli_query($conn, $sql_date);
+
+if (mysqli_num_rows($result_date) > 0) {
+    $row_date = mysqli_fetch_assoc($result_date);
+    $latest_date = $row_date['date'];
+
+    // Convert the date into words
+    $date_in_words = date("F j, Y", strtotime($latest_date));
+} else {
+    $date_in_words = " ";
+    echo "<h4><strong>Please take food monitoring exam, <a href='studentmonitor.php'>click here</a></strong></h4>";
+
+}
+
+// Output the concatenated string
+echo "<h4><strong>Latest Recommendations:</strong> $date_in_words</h4>";
+?>
+</div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row"><?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sqlFruits = "SELECT resultFruits FROM food_monitoring WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$resultFruits = mysqli_query($conn, $sqlFruits);
+
+if (mysqli_num_rows($resultFruits) > 0) {
+    $row = mysqli_fetch_assoc($resultFruits);
+    $fruitsResult = $row['resultFruits'];
+} else {
+    $fruitsResult = "No data available"; // or any default message you want to display
+}
+?>
+
+<div class="col-lg-3 col-xl-3 col-xxl-3">
+    <h5><strong>Fruits</strong></h5>
+    <p><?php echo $fruitsResult; ?></p>
+</div>
+<?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sqlVeg = "SELECT resultVeg FROM food_monitoring WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$resultVeg = mysqli_query($conn, $sqlVeg);
+
+if (mysqli_num_rows($resultVeg) > 0) {
+    $row = mysqli_fetch_assoc($resultVeg);
+    $vegResult = $row['resultVeg'];
+} else {
+    $vegResult = "No data available"; // or any default message you want to display
+}
+?>
+
+<div class="col-lg-3 col-xl-3 col-xxl-3">
+    <h5><strong>Vegetables</strong></h5>
+    <p><?php echo $vegResult; ?></p>
+</div>
+<?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sqlGrains = "SELECT resultGrain FROM food_monitoring WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$resultGrains = mysqli_query($conn, $sqlGrains);
+
+if (mysqli_num_rows($resultGrains) > 0) {
+    $row = mysqli_fetch_assoc($resultGrains);
+    $grainsResult = $row['resultGrain'];
+} else {
+    $grainsResult = "No data available"; // or any default message you want to display
+}
+?>
+
+<div class="col-lg-3 col-xl-3 col-xxl-3">
+    <h5><strong>Grains</strong></h5>
+    <p><?php echo $grainsResult; ?></p>
+</div>
+<?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sqlDairy = "SELECT resultDairy FROM food_monitoring WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$resultDairy = mysqli_query($conn, $sqlDairy);
+
+if (mysqli_num_rows($resultDairy) > 0) {
+    $row = mysqli_fetch_assoc($resultDairy);
+    $dairyResult = $row['resultDairy'];
+} else {
+    $dairyResult = "No data available"; // or any default message you want to display
+}
+?>
+
+<div class="col-lg-3 col-xl-3 col-xxl-3">
+    <h5><strong>Dairy</strong></h5>
+    <p><?php echo $dairyResult; ?></p>
+</div>
+<?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sqlProtein = "SELECT resultProtein FROM food_monitoring WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$resultProtein = mysqli_query($conn, $sqlProtein);
+
+if (mysqli_num_rows($resultProtein) > 0) {
+    $row = mysqli_fetch_assoc($resultProtein);
+    $proteinResult = $row['resultProtein'];
+} else {
+    $proteinResult = "No data available"; // or any default message you want to display
+}
+?>
+
+<div class="col-lg-3 col-xl-3 col-xxl-3">
+    <h5><strong>Protein</strong></h5>
+    <p><?php echo $proteinResult; ?></p>
+</div>
+<?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sqlOils = "SELECT resultOils FROM food_monitoring WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$resultOils = mysqli_query($conn, $sqlOils);
+
+if (mysqli_num_rows($resultOils) > 0) {
+    $row = mysqli_fetch_assoc($resultOils);
+    $oilsResult = $row['resultOils'];
+} else {
+    $oilsResult = "No data available"; // or any default message you want to display
+}
+?>
+
+<div class="col-lg-3 col-xl-3 col-xxl-3">
+    <h5><strong>Oils</strong></h5>
+    <p><?php echo $oilsResult; ?></p>
+</div>
+<?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sqlAddedSugar = "SELECT resultAddedSugar FROM food_monitoring WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$resultAddedSugar = mysqli_query($conn, $sqlAddedSugar);
+
+if (mysqli_num_rows($resultAddedSugar) > 0) {
+    $row = mysqli_fetch_assoc($resultAddedSugar);
+    $addedSugarResult = $row['resultAddedSugar'];
+} else {
+    $addedSugarResult = "No data available"; // or any default message you want to display
+}
+?>
+
+<div class="col-lg-3 col-xl-3 col-xxl-3">
+    <h5><strong>Added Sugar</strong></h5>
+    <p><?php echo $addedSugarResult; ?></p>
+</div>
+<?php
+include 'setup.php';
+
+$student_id = $_SESSION['student_id'];
+
+$sqlDrinks = "SELECT resultDrinks FROM food_monitoring WHERE student_id = '$student_id' ORDER BY id DESC LIMIT 1";
+$resultDrinks = mysqli_query($conn, $sqlDrinks);
+
+if (mysqli_num_rows($resultDrinks) > 0) {
+    $row = mysqli_fetch_assoc($resultDrinks);
+    $drinksResult = $row['resultDrinks'];
+} else {
+    $drinksResult = "No data available"; // or any default message you want to display
+}
+?>
+
+<div class="col-lg-3 col-xl-3 col-xxl-3">
+    <h5><strong>Drinks</strong></h5>
+    <p><?php echo $drinksResult; ?></p>
+</div>
+</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="bg-white sticky-footer">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright"><span>Copyright @ iDentify 2023</span></div>
+                </div>
+            </footer>
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    </div>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/bs-init.js"></script>
+    <script src="assets/js/theme.js"></script>
+</body>
+
+</html>

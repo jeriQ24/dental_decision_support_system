@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Table - Brand</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Aclonica&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Adamina&amp;display=swap">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="assets/css/Bootstrap-4-Calendar-No-Custom-Code.css">
+    <link rel="stylesheet" href="assets/css/Icon-Button.css">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0" style="background: url(&quot;assets/img/blu3.jpg&quot;);">
+            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+                    <div class="sidebar-brand-icon rotate-n-15"><img src="assets/img/364960463_1215282112492812_4229741986524435405_n.png" style="width: 100%;height: 50px;"></div>
+                    <div class="sidebar-brand-text mx-3"><span>iDentify<br></span></div>
+                </a>
+                <hr class="sidebar-divider my-0">
+                <ul class="navbar-nav text-light" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link" href="admindash.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="adminstudents.php"><i class="fas fa-user-friends"></i><span>Students</span></a></li>
+                    <li class="nav-item dropdown"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><i class="fas fa-file-medical-alt"></i>Profiling</a>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="adminassessment.php">Oral Assessment</a><a class="dropdown-item" href="adminmonitoring.php">Food Monitoring</a></div>
+                    </li>
+                </ul>
+                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content">
+                <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
+                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                        <ul class="navbar-nav flex-nowrap ms-auto">
+                            <li class="nav-item dropdown d-sm-none no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><i class="fas fa-search"></i></a>
+                                <div class="dropdown-menu dropdown-menu-end p-3 animated--grow-in" aria-labelledby="searchDropdown">
+                                    <form class="me-auto navbar-search w-100">
+                                        <div class="input-group"><input class="bg-light form-control border-0 small" type="text" placeholder="Search for ...">
+                                            <div class="input-group-append"><button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown no-arrow mx-1"><div class="nav-item dropdown no-arrow">
+    <a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#">
+        <div>
+            <?php
+            include 'setup.php';
+
+            // Initialize a variable to store pending appointment notifications
+            $pendingAppointmentsHtml = '';
+
+            // Select pending appointments with details
+            $sql = "SELECT first_name, last_name, description, date FROM appointment WHERE status = 'Pending'";
+            $result = $conn->query($sql);
+
+            // Count the number of unseen notifications
+            $unseenCount = 0;
+
+            if ($result && $result->num_rows > 0) {
+                // Loop through pending appointments
+                while ($row = $result->fetch_assoc()) {
+                    $firstName = $row['first_name'];
+                    $lastName = $row['last_name'];
+                    $description = $row['description'];
+                    $date = $row['date'];
+
+                    // Concatenate notification message to the variable
+                    $pendingAppointmentsHtml .= '
+                    <a class="dropdown-item d-flex align-items-center" href="admindash.php?modal=pendingModal" style="text-decoration: none; color: inherit;">
+                        <div class="me-3">
+                            <div class="bg-primary icon-circle"><i class="fas fa-calendar-alt text-white"></i></div>
+                        </div>
+                        <div>
+                            <span class="small text-gray-500">' . $firstName . ' ' . $lastName . '</span>
+                            <p>' . $description . ' ' . $date . ' </p>
+                        </div>
+                    </a>
+                    ';
+                    
+                    $unseenCount++;
+                }
+
+                $result->free(); // Free the result set
+            }
+
+            // Output notification icon with badge
+            echo '<i class="fas fa-bell fa-fw"></i>';
+            echo '<span class="badge bg-danger badge-counter">' . $unseenCount . '</span>';
+            ?>
+        </div>
+    </a>
+    <div class="dropdown-menu dropdown-menu-end dropdown-list animated--grow-in" style="max-height: 200px; overflow-y: auto;">
+        <h6 class="dropdown-header">Notifications</h6>
+        <!-- Output the concatenated notification messages -->
+        <?php echo $pendingAppointmentsHtml; ?>
+    </div>
+</div>
+
+</li>
+                            <li class="nav-item dropdown no-arrow">
+                                <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><?php
+include 'setup.php';
+
+// Assuming you have a user_id stored in the session (replace this with your actual session variable)
+$admin_id = $_SESSION['admin_id'];
+
+
+// Fetch the first_name and last_name from the user table
+$query = "SELECT first_name, last_name FROM admin WHERE id = '$admin_id'";
+$result = mysqli_query($conn, $query);
+
+if (mysqli_num_rows($result) == 1) {
+    $row = mysqli_fetch_assoc($result);
+    $first_name = $row['first_name'];
+    $last_name = $row['last_name'];
+    
+    // Output the data within the HTML span element
+    echo '<span class="d-none d-lg-inline me-2 text-gray-600 small">' . $first_name . ' ' . $last_name . '</span>';
+} else {
+    echo '<span class="d-none d-lg-inline me-2 text-gray-600 small">User not found</span>';
+}
+?>
+</a>
+                                    <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in"><a class="dropdown-item" href="admineditprofile.php"><i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Profile</a>
+                                        <div class="dropdown-divider"></div><a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Logout</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="container-fluid">
+                    <h3 class="text-dark mb-4" style="font-weight: bold;font-family: 'Abril Fatface', serif;">Oral Health Assessment Results</h3>
+                    <div class="row">
+                        <div class="col-lg-6 col-xl-10 offset-xl-1" style="height: 125px;padding: 12px;">
+                            <div style="height: 80px;"><div>The chart displays the number of students' oral assessment results, aiming to visualize the variations in Immediate Action Required, Addressing Oral Health Issues, Moderate Oral Health Issues, Watch for Changes, Good Oral Health, and Excellent Oral Hygiene based on their department, age group and gender.</div></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div><?php
+include 'setup.php';
+
+$sql = "SELECT 
+            DISTINCT YEAR(regdate) AS reg_year,
+            SUM(CASE WHEN gender = 'Male' THEN 1 ELSE 0 END) AS male_total,
+            SUM(CASE WHEN gender = 'Female' THEN 1 ELSE 0 END) AS female_total,
+            COUNT(*) AS total_users,
+            SUM(CASE WHEN age BETWEEN 5 AND 6 AND gender = 'Male' THEN 1 ELSE 0 END) AS male_5_6,
+            SUM(CASE WHEN age BETWEEN 7 AND 12 AND gender = 'Male' THEN 1 ELSE 0 END) AS male_7_12,
+            SUM(CASE WHEN age BETWEEN 13 AND 16 AND gender = 'Male' THEN 1 ELSE 0 END) AS male_13_16,
+            SUM(CASE WHEN age BETWEEN 17 AND 18 AND gender = 'Male' THEN 1 ELSE 0 END) AS male_17_18,
+            SUM(CASE WHEN age BETWEEN 19 AND 23 AND gender = 'Male' THEN 1 ELSE 0 END) AS male_19_23,
+            SUM(CASE WHEN age BETWEEN 5 AND 6 AND gender = 'Female' THEN 1 ELSE 0 END) AS female_5_6,
+            SUM(CASE WHEN age BETWEEN 7 AND 12 AND gender = 'Female' THEN 1 ELSE 0 END) AS female_7_12,
+            SUM(CASE WHEN age BETWEEN 13 AND 16 AND gender = 'Female' THEN 1 ELSE 0 END) AS female_13_16,
+            SUM(CASE WHEN age BETWEEN 17 AND 18 AND gender = 'Female' THEN 1 ELSE 0 END) AS female_17_18,
+            SUM(CASE WHEN age BETWEEN 19 AND 23 AND gender = 'Female' THEN 1 ELSE 0 END) AS female_19_23
+        FROM users";
+
+$result = mysqli_query($conn, $sql);
+
+// Assuming only one row is fetched
+$data = mysqli_fetch_assoc($result);
+
+// Data for Chart.js
+$labels = ["5-6", "7-12", "13-16", "17-18", "19-23"];
+$maleData = [
+    $data['male_5_6'],
+    $data['male_7_12'],
+    $data['male_13_16'],
+    $data['male_17_18'],
+    $data['male_19_23']
+];
+$femaleData = [
+    $data['female_5_6'],
+    $data['female_7_12'],
+    $data['female_13_16'],
+    $data['female_17_18'],
+    $data['female_19_23']
+];
+
+// Calculate total count for each age group
+$totalData = array_map(function($male, $female) {
+    return $male + $female;
+}, $maleData, $femaleData);
+
+$regdate = $data['reg_year']; // Assuming regdate is a column in the users table
+?>
+
+
+
+<div class="card shadow mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="text-primary fw-bold m-0">Age and Gender Distribution of Students</h6>
+    </div>
+    <div class="card-body">
+        <select class="form-control" id="yearSelect" onchange="updateChart()" style="width: 25%;">
+            <?php
+            // Construct SQL query to fetch distinct registration years in descending order
+            $sql = "SELECT DISTINCT YEAR(regdate) AS reg_year FROM users ORDER BY reg_year DESC";
+            $result = mysqli_query($conn, $sql);
+        
+            // Check if query was successful
+            if ($result && mysqli_num_rows($result) > 0) {
+                echo "<option value=\"overall\" selected>Overall</option>"; // Pre-select Overall option
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $year = $row['reg_year'];
+                    echo "<option value=\"$year\">$year</option>";
+                }
+            } else {
+                // Handle case where no registration years are found
+                echo "<option value=\"\">No registration years found</option>";
+            }
+            ?>
+        </select>        
+        <canvas id="myChart" width="400" height="200"></canvas>
+    </div>    
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart;
+    var selectedYear;
+
+    function updateChart() {
+        selectedYear = document.getElementById('yearSelect').value;
+        localStorage.setItem('selectedYear', selectedYear); // Store selected year in local storage
+        fetchChartData(selectedYear);
+    }
+
+    function fetchChartData(year) {
+        fetch('fetch_chart_data.php?year=' + year)
+            .then(response => response.json())
+            .then(data => {
+                myChart.data.datasets[0].data = data.maleData;
+                myChart.data.datasets[1].data = data.femaleData;
+                myChart.data.datasets[2].data = data.totalData;
+                myChart.update();
+            });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Retrieve selected year from local storage
+        selectedYear = localStorage.getItem('selectedYear');
+        if (!selectedYear) {
+            // If no selected year in local storage, use "Overall"
+            selectedYear = "overall";
+        }
+        document.getElementById('yearSelect').value = selectedYear; // Set selected year in the select input
+        fetchChartData(selectedYear);
+
+        myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: <?=json_encode($labels)?>,
+                datasets: [{
+                    label: 'Male',
+                    data: [],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Female',
+                    data: [],
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Total',
+                    data: [],
+                    backgroundColor: 'rgba(0, 255, 0, 0.2)',
+                    borderColor: 'rgba(0, 255, 0, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    });
+</script>
+</div>
+                        </div>
+                        <div class="col-lg-6 col-xl-6 col-xxl-6">
+                            <div><?php
+include 'setup.php';
+
+$sqlDept = "SELECT 
+            DISTINCT YEAR(date) AS year, MONTH(date) AS month, department,
+            SUM(CASE WHEN results = 'Immediate Action Required!' THEN 1 ELSE 0 END) AS immediate_action,
+            SUM(CASE WHEN results = 'Addressing Oral Health Issues!' THEN 1 ELSE 0 END) AS addressing_oral_health,
+            SUM(CASE WHEN results = 'Moderate Oral Health Issues!' THEN 1 ELSE 0 END) AS moderate_oral_health,
+            SUM(CASE WHEN results = 'Watch for Changes!' THEN 1 ELSE 0 END) AS watch_changes,
+            SUM(CASE WHEN results = 'Good Oral Health!' THEN 1 ELSE 0 END) AS good_oral_health,
+            SUM(CASE WHEN results = 'Excellent Oral Hygiene!' THEN 1 ELSE 0 END) AS excellent_oral_hygiene
+            FROM dental_assessment
+            GROUP BY department
+            ORDER BY department";
+
+$result = mysqli_query($conn, $sqlDept);
+
+$departments = array(); // Array to hold unique department names
+$data = array(
+    'Immediate Action Required' => array(),
+    'Addressing Oral Health Issues' => array(),
+    'Moderate Oral Health Issues' => array(),
+    'Watch for Changes' => array(),
+    'Good Oral Health' => array(),
+    'Excellent Oral Hygiene' => array()
+);
+
+while ($row = mysqli_fetch_assoc($result)) {
+    $department = $row['department'];
+    
+    // If department is not already in the array, add it
+    if (!in_array($department, $departments)) {
+        $departments[] = $department;
+    }
+    
+    // Populate data for each result type
+    $data['Immediate Action Required'][] = $row['immediate_action'];
+    $data['Addressing Oral Health Issues'][] = $row['addressing_oral_health'];
+    $data['Moderate Oral Health Issues'][] = $row['moderate_oral_health'];
+    $data['Watch for Changes'][] = $row['watch_changes'];
+    $data['Good Oral Health'][] = $row['good_oral_health'];
+    $data['Excellent Oral Hygiene'][] = $row['excellent_oral_hygiene'];
+}
+
+// Fetch distinct years and months
+$sqlDistinctDates = "SELECT DISTINCT YEAR(date) AS year, MONTH(date) AS month FROM dental_assessment ORDER BY year DESC, month DESC";
+$resultDistinctDates = mysqli_query($conn, $sqlDistinctDates);
+
+$years = array();
+$months = array();
+
+while ($row = mysqli_fetch_assoc($resultDistinctDates)) {
+    $years[] = $row['year'];
+    $months[] = $row['month'];
+}
+$years = array_unique($years);
+$months = array_unique($months);
+?>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="card shadow mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="text-primary fw-bold m-0">By Department</h6>
+    </div>
+    <div class="card-body">
+        <div class="select" style="display: flex;">
+            <select class="form-control" id="selectYear" style="width: 25%; margin-right: 5px;">
+                <?php foreach ($years as $year) { ?>
+                    <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
+                <?php } ?>
+            </select>
+
+            <select class="form-control" id="monthSelect" style="width: 25%; margin-left: 5px;">
+                <?php foreach ($months as $month) { ?>
+                    <option value="<?php echo $month; ?>"><?php echo date("F", mktime(0, 0, 0, $month, 1)); ?></option>
+                <?php } ?>
+            </select>
+        </div>
+        <canvas id="barChart" width="400" height="200"></canvas>
+    </div>
+</div>
+
+<script>
+    var selectYear = document.getElementById('selectYear');
+    var monthSelect = document.getElementById('monthSelect');
+    var barChrt; // Define barChrt variable outside the scope of any function
+
+    selectYear.addEventListener('change', chartUpdate);
+    monthSelect.addEventListener('change', chartUpdate);
+
+    function chartUpdate() {
+        var yearSelected = selectYear.value;
+        var selectedMonth = monthSelect.value;
+
+        fetch('fetch_updated_data.php?year=' + yearSelected + '&month=' + selectedMonth)
+            .then(response => response.json())
+            .then(data => {
+                // Check if myChart is defined before updating it
+                if (barChrt) {
+                    barChrt.data.labels = data.departments;
+                    barChrt.data.datasets[0].data = data.immediate_action;
+                    barChrt.data.datasets[1].data = data.addressing_oral_health;
+                    barChrt.data.datasets[2].data = data.moderate_oral_health;
+                    barChrt.data.datasets[3].data = data.watch_changes;
+                    barChrt.data.datasets[4].data = data.good_oral_health;
+                    barChrt.data.datasets[5].data = data.excellent_oral_hygiene;
+                    barChrt.update();
+                }
+            });
+    }
+
+    // Get the latest year and month values
+    var latestYear = <?php echo $years[0]; ?>;
+    var latestMonth = <?php echo $months[0]; ?>;
+
+    // Set the selected values for the dropdown menus
+    selectYear.value = latestYear;
+    monthSelect.value = latestMonth;
+
+    // Trigger the chart update function with the latest values
+    chartUpdate();
+
+    // Initial chart rendering
+    var chart = document.getElementById('barChart').getContext('2d');
+    barChrt = new Chart(chart, {
+        type: 'bar',
+        data: {
+            labels: <?php echo json_encode($departments); ?>,
+            datasets: [
+                {
+                    label: 'Immediate Action Required',
+                    data: <?php echo json_encode($data['Immediate Action Required']); ?>,
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)', // RED
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Addressing Oral Health Issues',
+                    data: <?php echo json_encode($data['Addressing Oral Health Issues']); ?>,
+                    backgroundColor: 'rgba(255, 159, 64, 0.5)', // ORANGE
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Moderate Oral Health Issues',
+                    data: <?php echo json_encode($data['Moderate Oral Health Issues']); ?>,
+                    backgroundColor: 'rgba(255, 205, 86, 0.5)', // YELLOW
+                    borderColor: 'rgba(255, 205, 86, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Watch for Changes',
+                    data: <?php echo json_encode($data['Watch for Changes']); ?>,
+                    backgroundColor: 'rgba(154, 205, 50, 0.5)', // YELLOW GREEN
+                    borderColor: 'rgba(154, 205, 50, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Good Oral Health',
+                    data: <?php echo json_encode($data['Good Oral Health']); ?>,
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)', // GREEN
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Excellent Oral Hygiene',
+                    data: <?php echo json_encode($data['Excellent Oral Hygiene']); ?>,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)', // BLUE
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            scales: {
+                x: {},
+                y: {}
+            }
+        }
+    });
+</script>
+</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xxl-6">
+                            <div><?php
+include 'setup.php';
+
+$sqlAge = "SELECT 
+            DISTINCT age_group,
+            SUM(CASE WHEN results = 'Immediate Action Required!' THEN 1 ELSE 0 END) AS immediate_action,
+            SUM(CASE WHEN results = 'Addressing Oral Health Issues!' THEN 1 ELSE 0 END) AS addressing_oral_health,
+            SUM(CASE WHEN results = 'Moderate Oral Health Issues!' THEN 1 ELSE 0 END) AS moderate_oral_health,
+            SUM(CASE WHEN results = 'Watch for Changes!' THEN 1 ELSE 0 END) AS watch_changes,
+            SUM(CASE WHEN results = 'Good Oral Health!' THEN 1 ELSE 0 END) AS good_oral_health,
+            SUM(CASE WHEN results = 'Excellent Oral Hygiene!' THEN 1 ELSE 0 END) AS excellent_oral_hygiene
+            FROM (
+                SELECT 
+                    CASE
+                        WHEN age BETWEEN 5 AND 6 THEN '5-6'
+                        WHEN age BETWEEN 7 AND 12 THEN '7-12'
+                        WHEN age BETWEEN 13 AND 16 THEN '13-16'
+                        WHEN age BETWEEN 17 AND 18 THEN '17-18'
+                        WHEN age BETWEEN 19 AND 23 THEN '19-23'
+                        ELSE 'Other'
+                    END AS age_group,
+                    results
+                FROM dental_assessment
+                WHERE age BETWEEN 5 AND 23
+            ) AS subquery
+            GROUP BY age_group
+            ORDER BY FIELD(age_group, '5-6', '7-12', '13-16', '17-18', '19-23', 'Other')";
+
+// Execute SQL query
+$result = mysqli_query($conn, $sqlAge);
+
+$ages = array(); // Array to hold unique ages names
+$data = array(
+    'Immediate Action Required' => array(),
+    'Addressing Oral Health Issues' => array(),
+    'Moderate Oral Health Issues' => array(),
+    'Watch for Changes' => array(),
+    'Good Oral Health' => array(),
+    'Excellent Oral Hygiene' => array()
+);
+
+while ($row = mysqli_fetch_assoc($result)) {
+    $age = $row['age_group'];
+    
+    // If age is not already in the array, add it
+    if (!in_array($age, $ages)) {
+        $ages[] = $age;
+    }
+    
+    // Populate data for each result type
+    $data['Immediate Action Required'][] = $row['immediate_action'];
+    $data['Addressing Oral Health Issues'][] = $row['addressing_oral_health'];
+    $data['Moderate Oral Health Issues'][] = $row['moderate_oral_health'];
+    $data['Watch for Changes'][] = $row['watch_changes'];
+    $data['Good Oral Health'][] = $row['good_oral_health'];
+    $data['Excellent Oral Hygiene'][] = $row['excellent_oral_hygiene'];
+}
+
+// Fetch distinct years and months
+$sqlDistinctDates = "SELECT DISTINCT YEAR(date) AS year, MONTH(date) AS month FROM dental_assessment ORDER BY year DESC, month DESC";
+$resultDistinctDates = mysqli_query($conn, $sqlDistinctDates);
+
+$years = array();
+$months = array();
+
+while ($row = mysqli_fetch_assoc($resultDistinctDates)) {
+    $years[] = $row['year'];
+    $months[] = $row['month'];
+}
+$years = array_unique($years);
+$months = array_unique($months);
+?>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="card shadow mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="text-primary fw-bold m-0">By Age</h6>
+    </div>
+    <div class="card-body">
+        <div class="select" style="display: flex;">
+            <select class="form-control" id="ageSelectYear" style="width: 25%; margin-right: 5px;">
+                <?php foreach ($years as $year) { ?>
+                    <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
+                <?php } ?>
+            </select>
+
+            <select class="form-control" id="ageMonthSelect" style="width: 25%; margin-left: 5px;">
+                <?php foreach ($months as $month) { ?>
+                    <option value="<?php echo $month; ?>"><?php echo date("F", mktime(0, 0, 0, $month, 1)); ?></option>
+                <?php } ?>
+            </select>
+        </div>
+        <canvas id="ageBarChart" width="400" height="200"></canvas>
+    </div>
+</div>
+
+<script>
+    var ageSelectYear = document.getElementById('ageSelectYear');
+    var ageMonthSelect = document.getElementById('ageMonthSelect');
+    var ageBarChrt; // Define ageBarChrt variable outside the scope of any function
+
+    ageSelectYear.addEventListener('change', ageChartUpdate);
+    ageMonthSelect.addEventListener('change', ageChartUpdate);
+
+    function ageChartUpdate() {
+        var ageYearSelected = ageSelectYear.value;
+        var ageSelectedMonth = ageMonthSelect.value;
+
+        fetch('fetch_age_updated_data.php?year=' + ageYearSelected + '&month=' + ageSelectedMonth)
+            .then(response => response.json())
+            .then(data => {
+                // Check if myChart is defined before updating it
+                if (ageBarChrt) {
+                    ageBarChrt.data.labels = data.ages;
+                    ageBarChrt.data.datasets[0].data = data.immediate_action;
+                    ageBarChrt.data.datasets[1].data = data.addressing_oral_health;
+                    ageBarChrt.data.datasets[2].data = data.moderate_oral_health;
+                    ageBarChrt.data.datasets[3].data = data.watch_changes;
+                    ageBarChrt.data.datasets[4].data = data.good_oral_health;
+                    ageBarChrt.data.datasets[5].data = data.excellent_oral_hygiene;
+                    ageBarChrt.update();
+                }
+            });
+    }
+
+    // Get the latest year and month values
+    var latestYear = <?php echo $years[0]; ?>;
+    var latestMonth = <?php echo $months[0]; ?>;
+
+    // Set the selected values for the dropdown menus
+    ageSelectYear.value = latestYear;
+    ageMonthSelect.value = latestMonth;
+
+    // Trigger the chart update function with the latest values
+    ageChartUpdate();
+
+    // Initial chart rendering
+    var chart = document.getElementById('ageBarChart').getContext('2d');
+    ageBarChrt = new Chart(chart, {
+        type: 'bar',
+        data: {
+            labels: <?php echo json_encode($ages); ?>,
+            datasets: [
+                {
+                    label: 'Immediate Action Required',
+                    data: <?php echo json_encode($data['Immediate Action Required']); ?>,
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)', // RED
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Addressing Oral Health Issues',
+                    data: <?php echo json_encode($data['Addressing Oral Health Issues']); ?>,
+                    backgroundColor: 'rgba(255, 159, 64, 0.5)', // ORANGE
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Moderate Oral Health Issues',
+                    data: <?php echo json_encode($data['Moderate Oral Health Issues']); ?>,
+                    backgroundColor: 'rgba(255, 205, 86, 0.5)', // YELLOW
+                    borderColor: 'rgba(255, 205, 86, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Watch for Changes',
+                    data: <?php echo json_encode($data['Watch for Changes']); ?>,
+                    backgroundColor: 'rgba(154, 205, 50, 0.5)', // YELLOW GREEN
+                    borderColor: 'rgba(154, 205, 50, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Good Oral Health',
+                    data: <?php echo json_encode($data['Good Oral Health']); ?>,
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)', // GREEN
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Excellent Oral Hygiene',
+                    data: <?php echo json_encode($data['Excellent Oral Hygiene']); ?>,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)', // BLUE
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            scales: {
+                x: {},
+                y: {}
+            }
+        }
+    });
+</script>
+</div>
+                        </div>
+                        <div class="col-xxl-6"><?php
+include 'setup.php';
+
+$sqlDept = "SELECT 
+            DISTINCT YEAR(date) AS year, MONTH(date) AS month, gender,
+            SUM(CASE WHEN results = 'Immediate Action Required!' THEN 1 ELSE 0 END) AS immediate_action,
+            SUM(CASE WHEN results = 'Addressing Oral Health Issues!' THEN 1 ELSE 0 END) AS addressing_oral_health,
+            SUM(CASE WHEN results = 'Moderate Oral Health Issues!' THEN 1 ELSE 0 END) AS moderate_oral_health,
+            SUM(CASE WHEN results = 'Watch for Changes!' THEN 1 ELSE 0 END) AS watch_changes,
+            SUM(CASE WHEN results = 'Good Oral Health!' THEN 1 ELSE 0 END) AS good_oral_health,
+            SUM(CASE WHEN results = 'Excellent Oral Hygiene!' THEN 1 ELSE 0 END) AS excellent_oral_hygiene
+            FROM dental_assessment
+            GROUP BY gender
+            ORDER BY gender";
+
+$result = mysqli_query($conn, $sqlDept);
+
+$genders = array(); // Array to hold unique gender names
+$data = array(
+    'Immediate Action Required' => array(),
+    'Addressing Oral Health Issues' => array(),
+    'Moderate Oral Health Issues' => array(),
+    'Watch for Changes' => array(),
+    'Good Oral Health' => array(),
+    'Excellent Oral Hygiene' => array()
+);
+
+while ($row = mysqli_fetch_assoc($result)) {
+    $gender = $row['gender'];
+    
+    // If gender is not already in the array, add it
+    if (!in_array($gender, $genders)) {
+        $genders[] = $gender;
+    }
+    
+    // Populate data for each result type
+    $data['Immediate Action Required'][] = $row['immediate_action'];
+    $data['Addressing Oral Health Issues'][] = $row['addressing_oral_health'];
+    $data['Moderate Oral Health Issues'][] = $row['moderate_oral_health'];
+    $data['Watch for Changes'][] = $row['watch_changes'];
+    $data['Good Oral Health'][] = $row['good_oral_health'];
+    $data['Excellent Oral Hygiene'][] = $row['excellent_oral_hygiene'];
+}
+
+// Fetch distinct years and months
+$sqlDistinctDates = "SELECT DISTINCT YEAR(date) AS year, MONTH(date) AS month FROM dental_assessment ORDER BY year DESC, month DESC";
+$resultDistinctDates = mysqli_query($conn, $sqlDistinctDates);
+
+$years = array();
+$months = array();
+
+while ($row = mysqli_fetch_assoc($resultDistinctDates)) {
+    $years[] = $row['year'];
+    $months[] = $row['month'];
+}
+$years = array_unique($years);
+$months = array_unique($months);
+?>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="card shadow mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="text-primary fw-bold m-0">By Gender</h6>
+    </div>
+    <div class="card-body">
+        <div class="select" style="display: flex;">
+            <select class="form-control" id="genderYearSelect" style="width: 25%; margin-right: 5px;">
+                <?php foreach ($years as $year) { ?>
+                    <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
+                <?php } ?>
+            </select>
+
+            <select class="form-control" id="genderMonthSelect" style="width: 25%; margin-left: 5px;">
+                <?php foreach ($months as $month) { ?>
+                    <option value="<?php echo $month; ?>"><?php echo date("F", mktime(0, 0, 0, $month, 1)); ?></option>
+                <?php } ?>
+            </select>
+        </div>
+        <canvas id="genderBarChart" width="400" height="200"></canvas>
+    </div>
+</div>
+
+<script>
+    var genderYearSelect = document.getElementById('genderYearSelect');
+    var genderMonthSelect = document.getElementById('genderMonthSelect');
+    var genderBarChrt; // Define genderBarChrt variable outside the scope of any function
+
+    genderYearSelect.addEventListener('change', chartUpdate);
+    genderMonthSelect.addEventListener('change', chartUpdate);
+
+    function chartUpdate() {
+        var genderSelectedYear = genderYearSelect.value;
+        var genderSelectedMonth = genderMonthSelect.value;
+
+        fetch('fetch_gender_updated_data.php?year=' + genderSelectedYear + '&month=' + genderSelectedMonth)
+            .then(response => response.json())
+            .then(data => {
+                // Check if myChart is defined before updating it
+                if (genderBarChrt) {
+                    genderBarChrt.data.labels = data.genders;
+                    genderBarChrt.data.datasets[0].data = data.immediate_action;
+                    genderBarChrt.data.datasets[1].data = data.addressing_oral_health;
+                    genderBarChrt.data.datasets[2].data = data.moderate_oral_health;
+                    genderBarChrt.data.datasets[3].data = data.watch_changes;
+                    genderBarChrt.data.datasets[4].data = data.good_oral_health;
+                    genderBarChrt.data.datasets[5].data = data.excellent_oral_hygiene;
+                    genderBarChrt.update();
+                }
+            });
+    }
+
+    // Get the latest year and month values
+    var latestYear = <?php echo $years[0]; ?>;
+    var latestMonth = <?php echo $months[0]; ?>;
+
+    // Set the selected values for the dropdown menus
+    genderYearSelect.value = latestYear;
+    genderMonthSelect.value = latestMonth;
+
+    // Trigger the chart update function with the latest values
+    chartUpdate();
+
+    // Initial chart rendering
+    var chart = document.getElementById('genderBarChart').getContext('2d');
+    genderBarChrt = new Chart(chart, {
+        type: 'bar',
+        data: {
+            labels: <?php echo json_encode($genders); ?>,
+            datasets: [
+                {
+                    label: 'Immediate Action Required',
+                    data: <?php echo json_encode($data['Immediate Action Required']); ?>,
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)', // RED
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Addressing Oral Health Issues',
+                    data: <?php echo json_encode($data['Addressing Oral Health Issues']); ?>,
+                    backgroundColor: 'rgba(255, 159, 64, 0.5)', // ORANGE
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Moderate Oral Health Issues',
+                    data: <?php echo json_encode($data['Moderate Oral Health Issues']); ?>,
+                    backgroundColor: 'rgba(255, 205, 86, 0.5)', // YELLOW
+                    borderColor: 'rgba(255, 205, 86, 1)',
+                    backgroundColor: 'rgba(255, 205, 86, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Watch for Changes',
+                    data: <?php echo json_encode($data['Watch for Changes']); ?>,
+                    backgroundColor: 'rgba(154, 205, 50, 0.5)', // YELLOW GREEN
+                    borderColor: 'rgba(154, 205, 50, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Good Oral Health',
+                    data: <?php echo json_encode($data['Good Oral Health']); ?>,
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)', // GREEN
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Excellent Oral Hygiene',
+                    data: <?php echo json_encode($data['Excellent Oral Hygiene']); ?>,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)', // BLUE
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            scales: {
+                x: {
+                    stacked: true, // Stack X-axis
+                },
+                y: {
+                    stacked: true, // Stack Y-axis
+                }
+            }
+        }
+    });
+</script>
+</div>
+                    </div>
+                </div>
+            </div>
+            <footer class="bg-white sticky-footer">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright"><span>Copyright @ iDentify 2023</span></div>
+                </div>
+            </footer>
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    </div>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/bs-init.js"></script>
+    <script src="assets/js/theme.js"></script>
+</body>
+
+</html>

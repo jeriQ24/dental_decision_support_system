@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Table - Brand</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Aclonica&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Adamina&amp;display=swap">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="assets/css/Bootstrap-4-Calendar-No-Custom-Code.css">
+    <link rel="stylesheet" href="assets/css/Icon-Button.css">
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0" style="background: url(&quot;assets/img/blue.jpg&quot;);">
+            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+                    <div class="sidebar-brand-icon rotate-n-15"><img src="assets/img/364960463_1215282112492812_4229741986524435405_n.png" style="width: 100%;height: 50px;"></div>
+                    <div class="sidebar-brand-text mx-3"><span>iDentify<br></span></div>
+                </a>
+                <hr class="sidebar-divider my-0">
+                <ul class="navbar-nav text-light" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link" href="studentdash.php"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="studentprofile.php"><i class="fas fa-user"></i><span>Profile</span></a><a class="nav-link" href="studentprofile.php"><i class="fas fa-tooth"></i><span>Mouth Examination</span></a><a class="nav-link" href="studentprofile.php"><i class="fas fa-file-medical"></i><span>Medical History</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="studentmonitor.php"><i class="fas fa-chalkboard-teacher"></i><span>Food Monitoring</span></a></li>
+                    <li class="nav-item dropdown"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><i class="fas fa-chart-bar"></i>Profiling</a>
+                        <div class="dropdown-menu"><a class="dropdown-item" href="studentassess.php">Oral Assessment</a><a class="dropdown-item" href="studentmonitoring.php">Food Intake Monitoring</a></div>
+                    </li>
+                </ul>
+                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content">
+                <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
+                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                        <ul class="navbar-nav flex-nowrap ms-auto">
+                            <li class="nav-item dropdown d-sm-none no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><i class="fas fa-search"></i></a>
+                                <div class="dropdown-menu dropdown-menu-end p-3 animated--grow-in" aria-labelledby="searchDropdown">
+                                    <form class="me-auto navbar-search w-100">
+                                        <div class="input-group"><input class="bg-light form-control border-0 small" type="text" placeholder="Search for ...">
+                                            <div class="input-group-append"><button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown no-arrow mx-1"><div class="nav-item dropdown no-arrow">
+    <a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#">
+        <div>
+            <?php
+            include 'setup.php';
+
+            // Sanitize user input
+            $student_id = (isset($_SESSION['student_id'])) ? intval($_SESSION['student_id']) : 0;
+
+            // Initialize a variable to store pending appointment notifications
+            $pendingAppointmentsHtml = '';
+
+            // Directly embed the value into the SQL query (not recommended for user input)
+            $sql = "SELECT description, date, status FROM appointment WHERE student_id = $student_id AND status IN ('Rescheduled', 'Approved')";
+            $result = $conn->query($sql);
+            
+            // ... rest of your code
+                        $result = $conn->query($sql);
+
+            // Count the number of unseen notifications
+            $unseenCount = 0;
+
+            if ($result && $result->num_rows > 0) {
+                // Loop through pending appointments
+                while ($row = $result->fetch_assoc()) {
+                    $description = htmlspecialchars($row['description']); // Escape output
+                    $status = htmlspecialchars($row['status']); // Escape output
+                    $date = htmlspecialchars($row['date']); // Escape output
+
+                    // Concatenate notification message to the variable
+                    $pendingAppointmentsHtml .= '
+                    <a class="dropdown-item d-flex align-items-center" href="studentdash.php" style="text-decoration: none; color: inherit;">
+                        <div class="me-3">
+                            <div class="bg-primary icon-circle"><i class="fas fa-calendar-alt text-white"></i></div>
+                        </div>
+                        <div>
+                            <span class="small text-gray-500">' . $status . '</span>
+                            <p>' . $description . ' ' . $date . ' </p>
+                        </div>
+                    </a>
+                    ';
+
+                    $unseenCount++;
+                }
+
+                // No need to close the result set for a simple query
+            }
+
+            // Output notification icon with badge
+            echo '<i class="fas fa-bell fa-fw"></i>';
+            echo '<span class="badge bg-danger badge-counter">' . $unseenCount . '</span>';
+            ?>
+        </div>
+    </a>
+    <div class="dropdown-menu dropdown-menu-end dropdown-list animated--grow-in" style="max-height: 200px; overflow-y: auto;">
+        <h6 class="dropdown-header">Notifications</h6>
+        <!-- Output the concatenated notification messages -->
+        <?php echo $pendingAppointmentsHtml; ?>
+    </div>
+</div>
+</li>
+                            <li class="nav-item dropdown no-arrow">
+                                <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><?php
+include 'setup.php';
+
+// Assuming you have a user_id stored in the session (replace this with your actual session variable)
+$user_id = $_SESSION['user_id'];
+
+// Fetch the first_name and last_name from the user table
+$query = "SELECT first_name, last_name FROM users WHERE id = '$user_id'";
+$result = mysqli_query($conn, $query);
+
+if (mysqli_num_rows($result) == 1) {
+    $row = mysqli_fetch_assoc($result);
+    $first_name = $row['first_name'];
+    $last_name = $row['last_name'];
+    
+    // Output the data within the HTML span element
+    echo '<span class="d-none d-lg-inline me-2 text-gray-600 small">' . $first_name . ' ' . $last_name . '</span>';
+} else {
+    echo '<span class="d-none d-lg-inline me-2 text-gray-600 small">User not found</span>';
+}
+?>
+</a>
+                                    <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in"><a class="dropdown-item" href="studentprofile.php"><i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Profile</a>
+                                        <div class="dropdown-divider"></div><a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Logout</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="container-fluid">
+                    <h3 class="text-dark mb-4" style="font-family: 'Abril Fatface', serif;"><strong>Set an Appointment</strong></h3>
+                    <form id="appointmentForm" method="post" action="studentappointment.php" onsubmit="return validateForm()">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col text-center"><a class="text-center" href="#" style="font-size: 42px;" data-bs-target="#approvedModal" data-bs-toggle="modal"><strong>Schedule</strong><br></a></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <h3 class="text-center"><strong>Morning(8:00 AM - 11:00 AM)</strong></h3>
+                                        <div class="row">
+                                            <div class="col">
+                                                <h4><strong>Monday</strong></h4>
+                                                <p>Tooth Extraction</p>
+                                                <p>Consultation</p>
+                                            </div>
+                                            <div class="col">
+                                                <h4><strong>Thursday</strong></h4>
+                                                <p>Tooth Extraction</p>
+                                                <p>Consultation</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xxl-6">
+                                                <h4><strong>Tuesday</strong></h4>
+                                                <p>Tooth Extraction</p>
+                                                <p>Consultation</p>
+                                            </div>
+                                            <div class="col-xxl-6">
+                                                <h4><strong>Wednesday</strong></h4>
+                                                <p>Tooth Extraction</p>
+                                                <p>Consultation</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <h3 class="text-center"><strong>Afternoon(1:00</strong>&nbsp;<strong>PM -&nbsp;4:00 PM)</strong></h3>
+                                        <div class="row">
+                                            <div class="col">
+                                                <h4><strong>Monday</strong></h4>
+                                                <p>Oral Prophylaxis</p>
+                                                <p>Consultation</p>
+                                            </div>
+                                            <div class="col">
+                                                <h4><strong>Thursday</strong></h4>
+                                                <p>Restoration</p>
+                                                <p>Consultation</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xxl-6">
+                                                <h4><strong>Tuesday</strong></h4>
+                                                <p>Oral Prophylaxis</p>
+                                                <p>Consultation</p>
+                                            </div>
+                                            <div class="col-xxl-6">
+                                                <h4><strong>Wednesday</strong></h4>
+                                                <p>Restoration</p>
+                                                <p>Consultation</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="height: 10px;background: #2f3438;border-color: #2f3438;border-radius: 15px;"></div><div class="row" style="margin-top: 10px;">
+    <div class="col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+        <p>Date of appointment</p><input id="dateInput" class="form-control" type="date" name="date" required />
+    </div>
+    <div class="col">
+        <p>Time of appointment</p>
+        <select id="timeSelect" class="form-select">
+            <optgroup label="Select Time">
+                <option value="08:00" selected>8:00 AM</option>
+                <option value="09:00">9:00 AM</option>
+                <option value="10:00">10:00 AM</option>
+                <option value="11:00">11:00 AM</option>
+                <option value="13:00">1:00 PM</option>
+                <option value="14:00">2:00 PM</option>
+                <option value="15:00">3:00 PM</option>
+                <option value="16:00">4:00 PM</option>
+            </optgroup>
+        </select>
+    </div>
+
+    <input type="hidden" id="timeInput" name="time">
+    <div class="col-md-12">
+        <p>What type of services are you looking for?</p><select class="form-select" id="serviceSelect" name="description" required>
+            <optgroup label="Services">
+                <option value="Consultation">Consultation</option>
+                <option value="Tooth Extractions">Tooth Extractions</option>
+                <option value="Oral Prophylaxis">Oral Prophylaxis</option>
+                <option value="Restoration">Restoration</option>
+            </optgroup>
+        </select>
+    </div>
+</div>
+<p id="availabilityWarning" style="color: red; display: none;">Services are only available on Monday to Thursday.</p>
+<script>
+    // Get references to select and hidden input
+    const timeSelect = document.getElementById('timeSelect');
+    const timeInput = document.getElementById('timeInput');
+    const dateInput = document.getElementById('dateInput');
+    const serviceSelect = document.getElementById('serviceSelect');
+    const availabilityWarning = document.getElementById('availabilityWarning');
+
+    // Function to check service availability
+    function checkServiceAvailability() {
+        const selectedDate = new Date(dateInput.value);
+        const selectedDay = selectedDate.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+        const selectedTime = parseInt(timeSelect.value.substring(0, 2), 10);
+
+        // Clear previous warning
+        availabilityWarning.style.display = 'none';
+
+        // Define available services based on day and time
+        let availableServices = [];
+        if (selectedDay >= 1 && selectedDay <= 4) { // Monday to Thursday
+            if (selectedTime >= 8 && selectedTime < 11) {
+                availableServices = ["Tooth Extractions", "Consultation"];
+            } else if (selectedTime >= 13 && selectedTime < 16) {
+                if (selectedDay === 1 || selectedDay === 2) { // Monday or Tuesday
+                    availableServices = ["Oral Prophylaxis", "Consultation"];
+                } else { // Wednesday or Thursday
+                    availableServices = ["Restoration", "Consultation"];
+                }
+            }
+        } else {
+            availabilityWarning.style.display = 'block';
+        }
+
+        // Update available services in the dropdown
+        while (serviceSelect.options.length > 0) {
+            serviceSelect.options.remove(0);
+        }
+        availableServices.forEach(service => {
+            const option = document.createElement('option');
+            option.value = service;
+            option.textContent = service;
+            serviceSelect.appendChild(option);
+        });
+
+        // Update the hidden input value to match the selected time
+        timeInput.value = timeSelect.value;
+    }
+
+    // Add event listeners
+    dateInput.addEventListener('change', checkServiceAvailability);
+    timeSelect.addEventListener('change', checkServiceAvailability);
+
+    // Set initial value of timeInput based on the initially selected option
+    const initialSelectedTime = timeSelect.value;
+    timeInput.value = initialSelectedTime;
+
+    // Check availability initially
+    checkServiceAvailability();
+</script>
+
+                                <div class="row">
+                                    <div class="col">
+                                        <div style="text-align: right;margin-top: 10px;"><button class="btn btn-primary" type="submit">Submit</button></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <footer class="bg-white sticky-footer">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright"><span>Copyright @ iDentify 2023</span></div>
+                </div>
+            </footer>
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    </div>
+    <div class="modal fade" role="dialog" tabindex="-1" id="approvedModal">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"><strong>Approved Modal</strong></h4><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body"><?php
+include 'setup.php';
+
+// Fetch data from the database
+$sql = "SELECT id, CONCAT(first_name, ' ', last_name) AS name, course, CONCAT(DATE_FORMAT(date, '%Y-%m-%d'), ' ', TIME_FORMAT(time, '%h:%i %p')) AS datetime, description FROM appointment WHERE status = 'Approved'";
+$result = $conn->query($sql);
+
+if ($result && $result->num_rows > 0) {
+    echo '<table class="table">';
+    echo '<thead>';
+    echo '<tr>';
+    echo '<th>Name</th>';
+    echo '<th>Course</th>';
+    echo '<th>Date and Time</th>';
+    echo '<th>Description</th>';
+    echo '</tr>';
+    echo '</thead>';
+    echo '<tbody>';
+    
+    while ($row = $result->fetch_assoc()) {
+        echo '<tr>';
+        echo '<td>' . $row['name'] . '</td>';
+        echo '<td>' . $row['course'] . '</td>';
+        echo '<td>' . $row['datetime'] . '</td>';
+        echo '<td>' . $row['description'] . '</td>';
+        echo '</td>';
+        echo '</tr>';
+    }
+
+    echo '</tbody>';
+    echo '</table>';
+} else {
+    echo '<table class="table">';
+    echo '<tr>';
+    echo '<td colspan="5">No appointments found.</td>';
+    echo '</tr>';
+    echo '</table>';
+}
+
+?>
+</div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/bs-init.js"></script>
+    <script src="assets/js/theme.js"></script>
+</body>
+
+</html>
